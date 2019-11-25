@@ -1,0 +1,354 @@
+<?php
+
+function landing_page_creator_help($path, $arg) {
+  switch ($path) {
+    case "admin/help#landing_page_creator":
+      return t("Create landing pages for assignment of DOIs"); 
+      break; 
+  }
+}
+
+function landing_page_creator_init(){
+  $mpath = drupal_get_path('module', 'landing_page_creator');
+  drupal_add_css($mpath . '/css/landing_page_creator.css');
+}
+
+function landing_page_creator_menu() {
+  $items = array();
+
+  // create landing page
+  $items['landing-page-creator/form'] = array(
+    'page callback' => 'landing_page_creator_form',
+    'access arguments' => array('access content'),
+    'access callback' => TRUE,
+    'description' => t('Page to submit DOIs request'),
+    'type' => MENU_CALLBACK,
+  );
+  // create landing page administrative page
+  // it requires to set up datacite account
+  $items['admin/config/services/doi-request'] = array(
+    'title' => 'Datacite account configuration',
+    'description' => 'Configuration for the request of DOI',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('landing_page_creator_admin'),
+    'access arguments' => array('access administration pages'),
+    'file' => 'landing_page_creator.admin.inc',
+  );
+
+  return $items;
+}
+
+function landing_page_creator_form() {
+  return drupal_get_form('creator_form');
+}
+
+function creator_form($form, $form_state) {
+  // upload the xml 
+  $form['xml_file'] = array(
+    '#type' => 'managed_file',
+    '#title' => t('Upload your file xml file containing the required metatdata'),
+    '#upload_validators' => array('file_validate_extensions' => array('xml'),),
+    '#upload_location' => 'public://landingpage_xml',
+  );
+  
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#submit' => array('landing_page_creator_submit'),
+    '#value' => t('Submit'),
+  );
+  
+  return $form;
+}
+
+// extract mmd to the last child
+function depth_mmd($prefix, $iterator) {
+  $kv_a = array();
+  $prefix_ = $prefix.' ';
+  if ($prefix == '') {
+    $prefix_ = '';
+  }
+  foreach ($iterator as $k => $v) {
+    if ($iterator->hasChildren()) {
+      $kv_a = array_merge($kv_a, depth_mmd($prefix_ . $k, $v));
+      if ($k == 'personnel' || $k == 'data_access') {
+        $kv_a[] = array($k);
+      }
+    } else {
+      //add mmd keys and values to form_state 
+      $kv_a[] = array($prefix_ . $k, (string)$v);
+    }
+  }
+  return $kv_a; //this function returns an array of arrys
+}
+
+function landing_page_creator_submit($form, &$form_state) {
+  global $user;
+  global $base_url;
+  global $base_path;
+
+  // uploaded file with mmd specifications
+  $furi = $form['xml_file']["#file"]->uri;
+
+  // translate mmd.xml to datacite.xml 
+  // should the repository included in this module? 
+  $furi_rp = drupal_realpath($furi);
+  exec('xsltproc path_to/mmd/xslt/mmd-to-datacite.xsl '.$furi_rp, $datacite_metadata, $status); //requires xsl file from repo
+
+  //get user and pass from admin configuration
+  $datacite_user = variable_get('username_datacite');
+  $datacite_pass = variable_get('pass_datacite');
+  $datacite_prefix = variable_get('prefix_datacite');
+  // send metadata to datacite
+  //curl -H "Content-Type: application/xml;charset=UTF-8" -X POST -i --user username:password -d @$datacite_metadata.xml https://mds.test.datacite.org/metadata
+
+
+  $xml = '<?xml version="1.0" encoding="UTF-8"?>
+<resource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://datacite.org/schema/kernel-4" xsi:schemaLocation="http://datacite.org/schema/kernel-4 http://schema.datacite.org/meta/kernel-4/metadata.xsd">
+  <identifier identifierType="DOI"></identifier>
+  <creators>
+    <creator>
+      <creatorName nameType="Personal">Ferrighi, Lara</creatorName>
+      <givenName>Lara</givenName>
+      <familyName>Ferrighi</familyName>
+      <nameIdentifier nameIdentifierScheme="ORCID" schemeURI="https://orcid.org">https://orcid.org/0000-0001-5221-1377</nameIdentifier>
+    </creator>
+  </creators>
+  <titles>
+    <title xml:lang="en">Test2 DOI at METNO</title>
+  </titles>
+  <publisher>Test2 Publisher METNO</publisher>
+  <publicationYear>2019</publicationYear>
+  <resourceType resourceTypeGeneral="Dataset"/>
+  <version/>
+</resource>
+';
+  $options_md = array(
+              'method' => 'POST',
+              'data' => $xml,
+              'timeout' => 25,
+              'headers' => array('Content-Type' => 'application/xml;charset=UTF-8',
+                                 'Authorization' => 'Basic ' . base64_encode($datacite_user . (":" . $datacite_pass)),),
+  );
+
+  $result = drupal_http_request('https://mds.test.datacite.org/metadata/'.$datacite_prefix, $options_md);
+  //extract DOI from  http response
+  if ($result->code == 201) {
+     $doi = explode("metadata/", $result->headers['location'])[1];
+     //$doi_uri = 'https://doi.org/'.$doi; // operational env. 
+     $doi_uri = 'https://handle.test.datacite.org/'.$doi; //test env. 
+  }else{
+     drupal_set_message(print_r('Request status: '.$result->status,TRUE),'warning');
+  }
+
+  //citation becomes:
+  //Creator (PublicationYear): Title. Version. Publisher. (resourceTypeGeneral). Identifier
+  
+  $xml_content = file_get_contents($furi); // this is a string from gettype 
+  ////get xml object iterator 
+  $xml = new SimpleXmlIterator($xml_content); // problem with boolean
+  $xml_wns = $xml->children($xml->getNamespaces(true)['mmd']);
+  //
+  $form_state['metadata'] = depth_mmd("", $xml_wns);
+ 
+  $count_personnel = 0;
+  $role_list = array();
+  $name_list = array();
+  $email_list = array();
+  $inst_list = array();
+
+  // data access type & resource
+  $count_access = 0;
+  $dat_list = array();
+  $dar_list = array();
+  foreach ($form_state['metadata'] as &$v) {
+    if ($v[0] == 'metadata_identifier') {
+      $metadata_id = $v[1];
+    }
+    if ($v[0] == 'title') {
+      $title = $v[1];
+    }
+    if ($v[0] == 'abstract') {
+      $abstract = $v[1];
+    }
+    if ($v[0] == 'temporal_extent start_date') {
+      $time_start = $v[1];
+    }
+    if ($v[0] == 'temporal_extent end_date') {
+      $time_end = $v[1];
+    }
+    if ($v[0] == 'geographic_extent rectangle north') {
+      $north = $v[1];
+    }
+    if ($v[0] == 'geographic_extent rectangle south') {
+      $south = $v[1];
+    }
+    if ($v[0] == 'geographic_extent rectangle east') {
+      $east = $v[1];
+    }
+    if ($v[0] == 'geographic_extent rectangle west') {
+      $west = $v[1];
+    }
+// start personnel
+    if ($v[0] == 'personnel role'){
+      $role_list[$count_personnel] = $v[1];
+    }
+    if ($v[0] == 'personnel name') {
+      $name_list[$count_personnel] = $v[1];
+    }
+    if ($v[0] == 'personnel email') {
+      $email_list[$count_personnel] = $v[1];
+    }
+    if ($v[0] == 'personnel organisation') {
+      $inst_list[$count_personnel] = $v[1];
+    }
+    if ($v[0] == 'personnel') {
+      // make sure the arrays are not empty when field is missing
+      if (!isset($role_list[$count_personnel])) {
+        $role_list[$count_personnel] = null;
+      }
+      if (!isset($name_list[$count_personnel])) {
+        $name_list[$count_personnel] = null;
+      }
+      if (!isset($email_list[$count_personnel])) {
+        $email_list[$count_personnel] = null;
+      }
+      if (!isset($inst_list[$count_personnel])) {
+        $inst_list[$count_personnel] = null;
+      }
+      $count_personnel = $count_personnel + 1;
+    } 
+// start data access
+    if ($v[0] == 'data_access type'){
+      $dat_list[$count_access] = $v[1];
+    }
+    if ($v[0] == 'data_access resource') {
+      $dar_list[$count_access] = $v[1];
+    }
+    if ($v[0] == 'data_access') {
+      // make sure the arrays are not empty when field is missing
+      if (!isset($dat_list[$count_access])) {
+        $dat_list[$count_access] = null;
+      }
+      if (!isset($name_list[$count_access])) {
+        $dar_list[$count_personnel] = null;
+      }
+      $count_access = $count_access + 1;
+    } 
+    
+    if ($v[0] == 'dataset_citation dataset_title') {
+      $cit_title = $v[1];
+    }
+    if ($v[0] == 'dataset_citation dataset_creator') {
+      $cit_cr = $v[1];
+    }
+    //if ($v[0] == 'data_access type') {
+    //  $da_type = $v[1];
+    //}
+    //if ($v[0] == 'data_access resource') {
+    //  $da_resource = $v[1];
+    //}
+  }
+  //define landing page node
+  $node = new stdClass();
+  $node->title = $title;
+  $node->type = "landing_page";
+  // Sets some defaults. Invokes hook_prepare() and hook_node_prepare().
+  node_object_prepare($node); 
+  // Or e.g. 'en' if locale is enabled.
+  $node->language = LANGUAGE_NONE; 
+  $node->uid = $user->uid; 
+  // Status is 1 or 0; published or not.
+  $node->status = 1; 
+  // Promote is 1 or 0; promoted to front page or not.
+  $node->promote = 0; 
+  // Comment is 0, 1, 2; 0 = disabled, 1 = read only, or 2 = read/write.
+  $node->comment = 0;
+
+  // fill in the landing page node with content extracted from mmd and datacite doi and citation. 
+
+  // Abstract
+  $node->field_abstract[$node->language][]['value'] = $abstract;
+
+  // Citation
+  // Use Datacite?: Creator (PublicationYear): Title. Publisher. (resourceTypeGeneral). Identifier
+  //$node->field_citation[$node->language][]['value'] = $cit_title.'; '.$cit_cr ;
+  $node->field_citation[$node->language][]['value'] = "citation here. Should we use datacite citation?";
+  $node->field_doi[$node->language][]['url'] = $doi_uri;
+  // License? 
+  //$node->field_lic[$node->language][][''] = "";
+  
+  // Contact
+  $hr = '';
+  for ($cn = 0; $cn < $count_personnel; $cn++) {
+    $node->field_contact_tot[$node->language][$cn] = array('value' => $hr.'<strong>Role: </strong>'.$role_list[$cn].'
+                                                          <strong>Name: </strong>'.$name_list[$cn].'
+                                                          <strong>email: </strong>'.$email_list[$cn].'
+                                                          <strong>Institution: </strong>'.$inst_list[$cn],
+                                                        'format' => 'full_html',
+                                                  );
+    $hr = '<hr>';
+    
+  }
+  // time start and end
+  $node->field_time_start[$node->language][]['value'] = $time_start;
+  $node->field_time_end[$node->language][]['value'] = $time_end;
+
+  // bounding box
+  $node->field_north[$node->language][]['value'] = $north;
+  $node->field_south[$node->language][]['value'] = $south;
+  $node->field_east[$node->language][]['value']  = $east;
+  $node->field_west[$node->language][]['value']  = $west;
+  
+$geofield = array(
+  'geom' => "POLYGON ((".$west." ".$north.",".$east." ".$north.",".$east." ".$south.", ".$west." ".$south.",".$west." ".$north.")) ",
+  'geo_type' => 'bounds',
+  'lat' => "$north",
+  'lon' => "$east",
+  'left' => $west,
+  'top' => $north,
+  'right' => $east,
+  'bottom' => $south
+);
+
+  $node->field_bnds[$node->language][0] = $geofield;
+
+  // data access
+  //$node->field_dat[$node->language][]['value'] = $da_type;
+  //$node->field_dar[$node->language][]['url'] = $da_resource;
+  // Contact
+  $hr = '';
+  for ($cn = 0; $cn < $count_access; $cn++) {
+    $node->field_access_tot[$node->language][$cn] = array('value' => $hr.'<strong>Type: </strong>'.$dat_list[$cn].'
+                                                          <strong>Resource: </strong><a href='.$dar_list[$cn].'>'.$dar_list[$cn].'</a>',
+                                                          'format' => 'full_html',
+                                                         );
+    $hr = '<hr>';
+    
+  }
+
+  $node->path['alias'] = "datasets/".$doi;
+
+  //$node->changed = $_SERVER['REQUEST_TIME'];
+  //$node->created = $_SERVER['REQUEST_TIME'];
+
+  $node = node_submit($node); // Prepare node for saving
+  node_save($node);
+
+//register the url to datacite
+//curl -H "Content-Type:text/plain;charset=UTF-8" -X PUT --user username:password -d "$(printf 'doi=10.5438/JQX3-61AT\nurl=http://example.org/')" https://mds.test.datacite.org/doi/10.5438/JQX3-61AT
+
+  $options_url = array(
+              'method' => 'PUT',
+              //'data' => "$(printf 'doi='.$doi.'\nurl='.$base_url.'/'.$node->path['alias'])",
+              'data' => 'doi='.$doi."\nurl=".$base_url.'/'.$node->path['alias'],
+              'timeout' => 25,
+              'headers' => array('Content-Type' => 'text/plain;charset=UTF-8',
+                                 'Authorization' => 'Basic ' . base64_encode($datacite_user . (":" . $datacite_pass)),),
+  );
+  $result_reg = drupal_http_request('https://mds.test.datacite.org/doi/'.$doi, $options_url);
+
+  drupal_set_message( "Node with nid " . $node->nid . " saved!\n");
+  //$form_state['redirect']  = 'node/'.$node->nid;
+  $form_state['redirect']  = "datasets/".$doi;
+}
+

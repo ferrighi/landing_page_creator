@@ -1,0 +1,60 @@
+.node-landing-page fieldset {
+   background-color: white;
+   border: unset;
+   box-shadow: 0 2px 4px 0 rgba(0,51,102,0.2), 0 3px 8px 0 rgba(0,51,102,0.19);
+   padding: 2em;
+   margin: 1em;
+}
+
+.node-landing-page legend {
+   font-weight: bold;
+   font-size: 1.5em;
+}
+
+.node-landing-page {
+   background-color: white;
+   box-shadow: 0 2px 4px 0 rgba(0,51,102,0.2), 0 3px 8px 0 rgba(0,51,102,0.19);
+   font-size: 16px;
+}
+
+.node-landing-page .field-name-field-doi{
+   background-color: aliceblue;
+   padding-top: 1em;
+   padding-bottom: 1em;
+   margin-bottom: 1em;
+}
+
+.node-landing-page .field-name-field-citation{
+   padding-top: 1em;
+   padding-bottom: 1em;
+   margin-bottom: 1em;
+}
+
+.node-landing-page .field-name-field-dat{
+   background-color: aliceblue;
+}
+
+.node-landing-page .field-name-field-dar{
+   background-color: aliceblue;
+   padding-top: 1em;
+   padding-bottom: 2em;
+   font-size: 17px;
+}
+
+.download-icon{
+    display:block;
+    height:20px;
+    text-decoration:none;
+    padding-left:60px;
+    padding-top:10px;
+}
+.download-icon:before{
+    content: '';
+    background:url('../icons/index.png');
+    background-size:cover;
+        position:absolute;
+    width:40px;
+    height:40px;
+    margin-left:-50px;
+    padding:10px;
+}
