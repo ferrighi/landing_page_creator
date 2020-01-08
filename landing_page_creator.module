@@ -13,6 +13,17 @@ function landing_page_creator_init(){
   drupal_add_css($mpath . '/css/landing_page_creator.css');
 }
 
+
+function landing_page_creator_login($calling_uri) {
+  global $user;
+  if (!($user->uid)) {
+    $dest = drupal_get_destination();
+    drupal_set_message(t('You need to login or register to validate your dataset'), 'error');
+    drupal_goto('user/login', array('query' => $calling_uri));
+  }
+}
+
+
 function landing_page_creator_menu() {
   $items = array();
 
@@ -39,14 +50,24 @@ function landing_page_creator_menu() {
 }
 
 function landing_page_creator_form() {
+
+  landing_page_creator_login(drupal_get_destination());
+
   return drupal_get_form('creator_form');
 }
 
 function creator_form($form, $form_state) {
+
+  $form['creation'] = array(
+    '#type' => 'markup',
+    '#format' => 'html',
+    '#markup' => t('Upload your file xml file containing the required metatdata. This should be an xml, with mmd specifications according to the METNO Metatdata Description (see https://github.com/steingod/mmd/blob/master/doc/mmd-specification.pdf).'),
+  );
+
   // upload the xml 
   $form['xml_file'] = array(
     '#type' => 'managed_file',
-    '#title' => t('Upload your file xml file containing the required metatdata'),
+    '#title' => t('File upload'),
     '#upload_validators' => array('file_validate_extensions' => array('xml'),),
     '#upload_location' => 'public://landingpage_xml',
   );
