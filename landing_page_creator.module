@@ -18,7 +18,7 @@ function landing_page_creator_login($calling_uri) {
   global $user;
   if (!($user->uid)) {
     $dest = drupal_get_destination();
-    drupal_set_message(t('You need to login or register to validate your dataset'), 'error');
+    drupal_set_message(t('You need to login or register to create a landing page for your dataset'), 'error');
     drupal_goto('user/login', array('query' => $calling_uri));
   }
 }
@@ -61,7 +61,7 @@ function creator_form($form, $form_state) {
   $form['creation'] = array(
     '#type' => 'markup',
     '#format' => 'html',
-    '#markup' => t('Upload your file xml file containing the required metatdata. This should be an xml, with mmd specifications according to the METNO Metatdata Description (see https://github.com/steingod/mmd/blob/master/doc/mmd-specification.pdf).'),
+    '#markup' => t('Here you can create a landing page for your dataset and automatically assign a DOI using the METNO Datacite account. <br> Upload your file xml file containing the required metatdata. This should be an xml, with mmd specifications according to <a href="https://github.com/steingod/mmd/blob/master/doc/mmd-specification.pdf">the METNO Metatdata Description</a>.'),
   );
 
   // upload the xml 
@@ -192,10 +192,10 @@ function landing_page_creator_submit($form, &$form_state) {
       $abstract = $v[1];
     }
     if ($v[0] == 'temporal_extent start_date') {
-      $time_start = $v[1];
+      $start_date = $v[1];
     }
     if ($v[0] == 'temporal_extent end_date') {
-      $time_end = $v[1];
+      $end_date = $v[1];
     }
     if ($v[0] == 'geographic_extent rectangle north') {
       $north = $v[1];
@@ -262,12 +262,12 @@ function landing_page_creator_submit($form, &$form_state) {
     if ($v[0] == 'dataset_citation dataset_creator') {
       $cit_cr = $v[1];
     }
-    //if ($v[0] == 'data_access type') {
-    //  $da_type = $v[1];
-    //}
-    //if ($v[0] == 'data_access resource') {
-    //  $da_resource = $v[1];
-    //}
+    if ($v[0] == 'dataset_citation dataset_release_date') {
+      $cit_rdate = $v[1];
+    }
+    if ($v[0] == 'dataset_citation dataset_publisher') {
+      $cit_publ = $v[1];
+    }
   }
   //define landing page node
   $node = new stdClass();
@@ -292,8 +292,8 @@ function landing_page_creator_submit($form, &$form_state) {
 
   // Citation
   // Use Datacite?: Creator (PublicationYear): Title. Publisher. (resourceTypeGeneral). Identifier
-  //$node->field_citation[$node->language][]['value'] = $cit_title.'; '.$cit_cr ;
-  $node->field_citation[$node->language][]['value'] = "citation here. Should we use datacite citation?";
+  $node->field_citation[$node->language][]['value'] = '('.$cit_rdate.'): '.$cit_title.'. '.$cit_publ.'. ';
+  //$node->field_citation[$node->language][]['value'] = "citation here. Should we use datacite citation?";
   $node->field_doi[$node->language][]['url'] = $doi_uri;
   // License? 
   //$node->field_lic[$node->language][][''] = "";
@@ -301,7 +301,7 @@ function landing_page_creator_submit($form, &$form_state) {
   // Contact
   $hr = '';
   for ($cn = 0; $cn < $count_personnel; $cn++) {
-    $node->field_contact_tot[$node->language][$cn] = array('value' => $hr.'<strong>Role: </strong>'.$role_list[$cn].'
+    $node->field_contact[$node->language][$cn] = array('value' => $hr.'<strong>Role: </strong>'.$role_list[$cn].'
                                                           <strong>Name: </strong>'.$name_list[$cn].'
                                                           <strong>email: </strong>'.$email_list[$cn].'
                                                           <strong>Institution: </strong>'.$inst_list[$cn],
@@ -310,9 +310,10 @@ function landing_page_creator_submit($form, &$form_state) {
     $hr = '<hr>';
     
   }
-  // time start and end
-  $node->field_time_start[$node->language][]['value'] = $time_start;
-  $node->field_time_end[$node->language][]['value'] = $time_end;
+
+  // date start and end
+  $node->field_start_date[$node->language][]['value'] = $start_date;
+  $node->field_end_date[$node->language][]['value'] = $end_date;
 
   // bounding box
   $node->field_north[$node->language][]['value'] = $north;
@@ -320,26 +321,23 @@ function landing_page_creator_submit($form, &$form_state) {
   $node->field_east[$node->language][]['value']  = $east;
   $node->field_west[$node->language][]['value']  = $west;
   
-$geofield = array(
-  'geom' => "POLYGON ((".$west." ".$north.",".$east." ".$north.",".$east." ".$south.", ".$west." ".$south.",".$west." ".$north.")) ",
-  'geo_type' => 'bounds',
-  'lat' => "$north",
-  'lon' => "$east",
-  'left' => $west,
-  'top' => $north,
-  'right' => $east,
-  'bottom' => $south
-);
+  $geofield = array(
+    'geom' => "POLYGON ((".$west." ".$north.",".$east." ".$north.",".$east." ".$south.", ".$west." ".$south.",".$west." ".$north.")) ",
+    'geo_type' => 'bounds',
+    'lat' => "$north",
+    'lon' => "$east",
+    'left' => $west,
+    'top' => $north,
+    'right' => $east,
+    'bottom' => $south
+  );
 
   $node->field_bnds[$node->language][0] = $geofield;
 
-  // data access
-  //$node->field_dat[$node->language][]['value'] = $da_type;
-  //$node->field_dar[$node->language][]['url'] = $da_resource;
   // Contact
   $hr = '';
   for ($cn = 0; $cn < $count_access; $cn++) {
-    $node->field_access_tot[$node->language][$cn] = array('value' => $hr.'<strong>Type: </strong>'.$dat_list[$cn].'
+    $node->field_access[$node->language][$cn] = array('value' => $hr.'<strong>Type: </strong>'.$dat_list[$cn].'
                                                           <strong>Resource: </strong><a href='.$dar_list[$cn].'>'.$dar_list[$cn].'</a>',
                                                           'format' => 'full_html',
                                                          );
@@ -348,9 +346,6 @@ $geofield = array(
   }
 
   $node->path['alias'] = "datasets/".$doi;
-
-  //$node->changed = $_SERVER['REQUEST_TIME'];
-  //$node->created = $_SERVER['REQUEST_TIME'];
 
   $node = node_submit($node); // Prepare node for saving
   node_save($node);
