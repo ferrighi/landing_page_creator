@@ -197,6 +197,9 @@ function landing_page_creator_submit($form, &$form_state) {
     if ($v[0] == 'abstract') {
       $abstract = $v[1];
     }
+    if ($v[0] == 'use_constraint') {
+      $license = $v[1];
+    }
     if ($v[0] == 'temporal_extent start_date') {
       $start_date = $v[1];
     }
@@ -309,8 +312,18 @@ function landing_page_creator_submit($form, &$form_state) {
   $node->field_citation[$node->language][]['value'] = '('.$cit_rdate.'): '.$cit_title.'. '.$cit_publ.'. ';
   //$node->field_citation[$node->language][]['value'] = "citation here. Should we use datacite citation?";
   $node->field_doi[$node->language][]['url'] = $doi_uri;
-  // License? 
-  //$node->field_lic[$node->language][][''] = "";
+  
+  if ($license == 'Public Domain') {
+     $lic_key = 'CC0';
+  }elseif ($license == 'Attribution'){
+     $lic_key = 'CCBY';
+  }elseif ($license == 'Share-alike'){
+     $lic_key = 'CCBYSA';
+  }elseif ($license == 'Noncommercial'){
+     $lic_key = 'CCBYNC';
+  }
+
+  $node->field_license[$node->language][0]['value'] = $lic_key;
   
   // iso topic category 
   for ($cn = 0; $cn < $count_itc; $cn++) {
