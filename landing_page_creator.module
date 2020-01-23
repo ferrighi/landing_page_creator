@@ -171,16 +171,22 @@ function landing_page_creator_submit($form, &$form_state) {
   //
   $form_state['metadata'] = depth_mmd("", $xml_wns);
  
+  // personnel
   $count_personnel = 0;
   $role_list = array();
   $name_list = array();
   $email_list = array();
   $inst_list = array();
 
+  // isotopic categories 
+  $count_itc = 0; 
+  $itc_list = array();
+
   // data access type & resource
   $count_access = 0;
   $dat_list = array();
   $dar_list = array();
+  
   foreach ($form_state['metadata'] as &$v) {
     if ($v[0] == 'metadata_identifier') {
       $metadata_id = $v[1];
@@ -209,7 +215,8 @@ function landing_page_creator_submit($form, &$form_state) {
     if ($v[0] == 'geographic_extent rectangle west') {
       $west = $v[1];
     }
-// start personnel
+    
+    // start personnel
     if ($v[0] == 'personnel role'){
       $role_list[$count_personnel] = $v[1];
     }
@@ -238,7 +245,8 @@ function landing_page_creator_submit($form, &$form_state) {
       }
       $count_personnel = $count_personnel + 1;
     } 
-// start data access
+
+    // start data access
     if ($v[0] == 'data_access type'){
       $dat_list[$count_access] = $v[1];
     }
@@ -254,8 +262,14 @@ function landing_page_creator_submit($form, &$form_state) {
         $dar_list[$count_personnel] = null;
       }
       $count_access = $count_access + 1;
-    } 
+    }
     
+    //isotopic categories
+    if ($v[0] == 'iso_topic_category'){
+      $itc_list[$count_itc] = $v[1];
+      $count_itc = $count_itc + 1;
+    } 
+
     if ($v[0] == 'dataset_citation dataset_title') {
       $cit_title = $v[1];
     }
@@ -298,6 +312,12 @@ function landing_page_creator_submit($form, &$form_state) {
   // License? 
   //$node->field_lic[$node->language][][''] = "";
   
+  // iso topic category 
+  for ($cn = 0; $cn < $count_itc; $cn++) {
+   $node->field_iso_topic_category[$node->language][$cn]['value'] = $itc_list[$cn];
+  }
+
+
   // Contact
   $hr = '';
   for ($cn = 0; $cn < $count_personnel; $cn++) {
