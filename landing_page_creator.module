@@ -78,8 +78,32 @@ function creator_form($form, $form_state) {
     '#value' => t('Submit'),
   );
   
+  $form['#validate'][] = 'datacite_conf_validate';
+  
   return $form;
 }
+
+//validate configuration of datacite
+function datacite_conf_validate($form, &$form_state) {
+  //get user and pass from admin configuration
+  $datacite_user = variable_get('username_datacite');
+  $datacite_pass = variable_get('pass_datacite');
+  $datacite_prefix = variable_get('prefix_datacite');
+
+  if (!isset($datacite_user) || $datacite_user == ''){
+     form_set_error('', t('You are connecting to DataCite to obtain a DOI. <br>
+                           Configure your Datacite credentials in the configuration interface'));
+  }
+  if (!isset($datacite_pass) || $datacite_pass == ''){
+     form_set_error('', t('You are connecting to DataCite to obtain a DOI. <br>
+                           Configure your Datacite credentials in the configuration interface'));
+  }
+  if (!isset($datacite_prefix) || $datacite_prefix == ''){
+     form_set_error('', t('You are connecting to DataCite to obtain a DOI. <br>
+                           Configure your Datacite credentials in the configuration interface'));
+  }
+}
+
 
 // extract mmd to the last child
 function depth_mmd($prefix, $iterator) {
