@@ -267,7 +267,7 @@ function landing_page_creator_submit($form, &$form_state) {
       if (!isset($dat_list[$count_access])) {
         $dat_list[$count_access] = null;
       }
-      if (!isset($name_list[$count_access])) {
+      if (!isset($dar_list[$count_access])) {
         $dar_list[$count_access] = null;
       }
       $count_access = $count_access + 1;
