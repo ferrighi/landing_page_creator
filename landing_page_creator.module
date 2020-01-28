@@ -206,9 +206,6 @@ function landing_page_creator_submit($form, &$form_state) {
     if ($v[0] == 'abstract') {
       $abstract = $v[1];
     }
-    if ($v[0] == 'use_constraint') {
-      $license = $v[1];
-    }
     if ($v[0] == 'temporal_extent start_date') {
       $start_date = $v[1];
     }
