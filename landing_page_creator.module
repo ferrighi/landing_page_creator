@@ -362,11 +362,6 @@ function landing_page_creator_submit($form, &$form_state) {
 
   $node->field_license[$node->language][0]['value'] = $lic_key;
   
-  // iso topic category 
-  for ($cn = 0; $cn < $count_itc; $cn++) {
-   $node->field_iso_topic_category[$node->language][$cn]['value'] = $itc_list[$cn];
-  }
-
 
   // Contact (can be multiple)
   $hr = '';
