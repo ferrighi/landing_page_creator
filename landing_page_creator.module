@@ -79,7 +79,7 @@ function creator_form($form, $form_state) {
   );
   
   $form['#validate'][] = 'datacite_conf_validate';
-  
+
   return $form;
 }
 
@@ -137,36 +137,17 @@ function landing_page_creator_submit($form, &$form_state) {
   // translate mmd.xml to datacite.xml 
   // should the repository included in this module? 
   $furi_rp = drupal_realpath($furi);
-  exec('xsltproc path_to/mmd/xslt/mmd-to-datacite.xsl '.$furi_rp, $datacite_metadata, $status); //requires xsl file from repo
+  exec('xsltproc '.drupal_get_path('module', 'landing_page_creator').'/includes/mmd-to-datacite.xsl '.$furi_rp.' 2>&1', $datacite_metadata, $status); //requires xsl file from repo
 
-  //get user and pass from admin configuration
   $datacite_user = variable_get('username_datacite');
   $datacite_pass = variable_get('pass_datacite');
   $datacite_prefix = variable_get('prefix_datacite');
+
   // send metadata to datacite
   //curl -H "Content-Type: application/xml;charset=UTF-8" -X POST -i --user username:password -d @$datacite_metadata.xml https://mds.test.datacite.org/metadata
 
-
-  $xml = '<?xml version="1.0" encoding="UTF-8"?>
-<resource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://datacite.org/schema/kernel-4" xsi:schemaLocation="http://datacite.org/schema/kernel-4 http://schema.datacite.org/meta/kernel-4/metadata.xsd">
-  <identifier identifierType="DOI"></identifier>
-  <creators>
-    <creator>
-      <creatorName nameType="Personal">Ferrighi, Lara</creatorName>
-      <givenName>Lara</givenName>
-      <familyName>Ferrighi</familyName>
-      <nameIdentifier nameIdentifierScheme="ORCID" schemeURI="https://orcid.org">https://orcid.org/0000-0001-5221-1377</nameIdentifier>
-    </creator>
-  </creators>
-  <titles>
-    <title xml:lang="en">Test2 DOI at METNO</title>
-  </titles>
-  <publisher>Test2 Publisher METNO</publisher>
-  <publicationYear>2019</publicationYear>
-  <resourceType resourceTypeGeneral="Dataset"/>
-  <version/>
-</resource>
-';
+  $xml = implode(" ",$datacite_metadata);
+  //drupal_set_message(print_r($xml,TRUE),'warning');
   $options_md = array(
               'method' => 'POST',
               'data' => $xml,
@@ -210,7 +191,11 @@ function landing_page_creator_submit($form, &$form_state) {
   $count_access = 0;
   $dat_list = array();
   $dar_list = array();
-  
+
+  // isotopic categories 
+  $count_itc = 0; 
+  $itc_list = array();
+
   foreach ($form_state['metadata'] as &$v) {
     if ($v[0] == 'metadata_identifier') {
       $metadata_id = $v[1];
@@ -297,19 +282,27 @@ function landing_page_creator_submit($form, &$form_state) {
       $count_itc = $count_itc + 1;
     } 
 
-    if ($v[0] == 'dataset_citation dataset_title') {
-      $cit_title = $v[1];
+    // dataset author title, publication year and publisher
+    if ($v[0] == 'dataset_citation author') {
+      $cit_auth = $v[1];
     }
-    if ($v[0] == 'dataset_citation dataset_creator') {
-      $cit_cr = $v[1];
+    if ($v[0] == 'dataset_citation title') {
+      $cit_tit = $v[1];
     }
-    if ($v[0] == 'dataset_citation dataset_release_date') {
+    if ($v[0] == 'dataset_citation publication_date') {
       $cit_rdate = $v[1];
     }
-    if ($v[0] == 'dataset_citation dataset_publisher') {
+    if ($v[0] == 'dataset_citation publisher') {
       $cit_publ = $v[1];
     }
+
+    //license
+    if ($v[0] == 'use_constraint') {
+      $license = $v[1];
+    }
   }
+
+
   //define landing page node
   $node = new stdClass();
   $node->title = $title;
@@ -326,17 +319,24 @@ function landing_page_creator_submit($form, &$form_state) {
   // Comment is 0, 1, 2; 0 = disabled, 1 = read only, or 2 = read/write.
   $node->comment = 0;
 
-  // fill in the landing page node with content extracted from mmd and datacite doi and citation. 
+  // Fill in the landing page node with content extracted from mmd and datacite response
 
   // Abstract
   $node->field_abstract[$node->language][]['value'] = $abstract;
 
+  // Iso topic categories (can be multiple)
+  for ($cn = 0; $cn < $count_itc; $cn++) {
+    $node->field_iso_topic_category[$node->language][$cn]['value'] = $itc_list[$cn];
+  }
+
   // Citation
-  // Use Datacite?: Creator (PublicationYear): Title. Publisher. (resourceTypeGeneral). Identifier
-  $node->field_citation[$node->language][]['value'] = '('.$cit_rdate.'): '.$cit_title.'. '.$cit_publ.'. ';
-  //$node->field_citation[$node->language][]['value'] = "citation here. Should we use datacite citation?";
+  $node->field_citation[$node->language][]['value'] = $cit_auth.', '.$cit_tit.', ('.date('Y', strtotime($cit_rdate)).') published by '.$cit_publ.'. ';
+                
+
+  // DOI
   $node->field_doi[$node->language][]['url'] = $doi_uri;
-  
+
+  // License
   if ($license == 'Public Domain') {
      $lic_key = 'CC0';
   }elseif ($license == 'Attribution'){
@@ -355,7 +355,7 @@ function landing_page_creator_submit($form, &$form_state) {
   }
 
 
-  // Contact
+  // Contact (can be multiple)
   $hr = '';
   for ($cn = 0; $cn < $count_personnel; $cn++) {
     $node->field_contact[$node->language][$cn] = array('value' => $hr.'<strong>Role: </strong>'.$role_list[$cn].'
@@ -391,13 +391,13 @@ function landing_page_creator_submit($form, &$form_state) {
 
   $node->field_bnds[$node->language][0] = $geofield;
 
-  // Contact
+  // Access (can be multiple)
   $hr = '';
   for ($cn = 0; $cn < $count_access; $cn++) {
     $node->field_access[$node->language][$cn] = array('value' => $hr.'<strong>Type: </strong>'.$dat_list[$cn].'
-                                                          <strong>Resource: </strong><a href='.$dar_list[$cn].'>'.$dar_list[$cn].'</a>',
-                                                          'format' => 'full_html',
-                                                         );
+                                                                      <strong>Resource: </strong><a href='.$dar_list[$cn].'>'.$dar_list[$cn].'</a>',
+                                                      'format' => 'full_html',
+                                                     );
     $hr = '<hr>';
     
   }
@@ -421,6 +421,7 @@ function landing_page_creator_submit($form, &$form_state) {
   $result_reg = drupal_http_request('https://mds.test.datacite.org/doi/'.$doi, $options_url);
 
   drupal_set_message( "Node with nid " . $node->nid . " saved!\n");
+
   //$form_state['redirect']  = 'node/'.$node->nid;
   $form_state['redirect']  = "datasets/".$doi;
 }

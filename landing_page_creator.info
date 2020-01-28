@@ -4,3 +4,4 @@ core = 7.x
 
 files[] = css/landing_page_creator.css
 files[] = landing_page_creator.admin.inc
+files[] = includes/mmd-to-datacite.xls

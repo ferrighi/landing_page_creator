@@ -11,6 +11,12 @@
    font-size: 1.5em;
 }
 
+.node-landing-page .field-name-field-iso-topic-category{
+   padding-top: 1em;
+   padding-bottom: 1em;
+   margin-bottom: 1em;
+}
+
 .node-landing-page {
    background-color: white;
    box-shadow: 0 2px 4px 0 rgba(0,51,102,0.2), 0 3px 8px 0 rgba(0,51,102,0.19);
