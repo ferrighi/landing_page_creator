@@ -292,10 +292,26 @@ function landing_page_creator_submit($form, &$form_state) {
     if ($v[0] == 'dataset_citation publisher') {
       $cit_publ = $v[1];
     }
+    if(isset($cit_auth)) {
+      if (isset($cit_tit)) {
+        $cit_string = $cit_auth.', '.$cit_tit.', ('.date('Y', strtotime($cit_rdate)).') published by '.$cit_publ.'. ';
+      }else{
+        $cit_string = $cit_auth.', '.$title.', ('.date('Y', strtotime($cit_rdate)).') published by '.$cit_publ.'. ';
+      }
+    }else{
+      if (isset($cit_tit)) {
+        $cit_string = $cit_tit.', ('.date('Y', strtotime($cit_rdate)).') published by '.$cit_publ.'. ';
+      }else{
+        $cit_string = $title.', ('.date('Y', strtotime($cit_rdate)).') published by '.$cit_publ.'. ';
+      }
+    }
 
     //license
     if ($v[0] == 'use_constraint') {
       $license = $v[1];
+    }
+    if (!isset($license)) {
+      $license = null;
     }
   }
 
@@ -327,7 +343,7 @@ function landing_page_creator_submit($form, &$form_state) {
   }
 
   // Citation
-  $node->field_citation[$node->language][]['value'] = $cit_auth.', '.$cit_tit.', ('.date('Y', strtotime($cit_rdate)).') published by '.$cit_publ.'. ';
+  $node->field_citation[$node->language][]['value'] = $cit_string;
                 
 
   // DOI
