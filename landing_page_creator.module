@@ -62,7 +62,9 @@ function creator_form($form, $form_state) {
   $form['creation'] = array(
     '#type' => 'markup',
     '#format' => 'html',
-    '#markup' => t('Here you can create a landing page for your dataset and automatically assign a DOI using the METNO Datacite account. <br> Upload your file xml file containing the required metatdata. This should be an xml, with mmd specifications according to <a href="https://github.com/steingod/mmd/blob/master/doc/mmd-specification.pdf">the METNO Metatdata Description</a>.'),
+    '#markup' => t('Here you create a landing page for your dataset and automatically assign a DOI using the METNO Datacite account. <br> 
+                    Upload your xml, with mmd specifications according to <a href="https://github.com/steingod/mmd/blob/master/doc/mmd-specification.pdf">the METNO Metatdata Description</a>. <br>
+                    <span style="font-size:large; color:red; font-weight:bold">This is a one-step process: one you submit the form a DOI will be created and cannot be deleted.</span>'),
   );
 
   // upload the xml 
