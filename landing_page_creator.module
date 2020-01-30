@@ -379,8 +379,6 @@ function landing_page_creator_submit($form, &$form_state) {
 
   // date start and end
   $node->field_start_date[$node->language][]['value'] = date('Y-m-d\TH:i:s', strtotime($start_date));
-  drupal_set_message(print_r($end_date,TRUE),'warning');
-  drupal_set_message(print_r(date('Y-m-d\TH:i:s', strtotime($end_date)),TRUE),'warning');
   if ($end_date != ''){
      $node->field_end_date[$node->language][]['value'] = date('Y-m-d\TH:i:s', strtotime($end_date));
   }else{
