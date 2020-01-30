@@ -29,6 +29,7 @@ function landing_page_creator_menu() {
 
   // create landing page
   $items['landing-page-creator/form'] = array(
+    'title' => t('Landing Page creator'),
     'page callback' => 'landing_page_creator_form',
     'access arguments' => array('access content'),
     'access callback' => TRUE,
