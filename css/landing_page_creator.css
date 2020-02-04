@@ -11,6 +11,16 @@
    font-size: 1.5em;
 }
 
+.node-landing-page .license-name {
+   display: none;
+}
+
+.node-landing-page .fieldset-description {
+   padding: 1em; 
+   margin: 1em; 
+   background-color: aliceblue;
+}
+
 .node-landing-page .field-name-field-iso-topic-category{
    padding-top: 1em;
    padding-bottom: 1em;
