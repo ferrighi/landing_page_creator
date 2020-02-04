@@ -21,10 +21,20 @@ function landing_page_creator_admin($form, &$form_state) {
   $form['prefix_datacite'] = array(
     '#type' => 'textfield',
     '#title' => t('Enter prefix'),
-    //test account
-    '#default_value' => variable_get('prefix_datacite','10.21339'),
     '#description' => t("the prefix for the account"),
   );
+
+// environment
+  $form['url_datacite'] = array(
+    '#type' => 'select',
+    '#options' => array(
+    'test.' => t('test'),
+    '' => t('operational'),
+    ),
+    '#title' => t('Environment'),
+    '#description' => t("Select test or operational environment"),
+  );
+
 
 
   return system_settings_form($form);

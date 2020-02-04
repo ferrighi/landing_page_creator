@@ -14,13 +14,12 @@ function landing_page_creator_init(){
 }
 
 
-function landing_page_creator_login($calling_uri) {
-  global $user;
-  if (!($user->uid)) {
-    $dest = drupal_get_destination();
-    drupal_set_message(t('You need to login or register to create a landing page for your dataset'), 'error');
-    drupal_goto('user/login', array('query' => $calling_uri));
-  }
+function landing_page_creator_permission() {
+  return array(
+    'access landing_page_creator content' => array(
+      'title' => t('Access content for the Landing Page module'),
+    )
+  );
 }
 
 
@@ -31,8 +30,7 @@ function landing_page_creator_menu() {
   $items['landing-page-creator/form'] = array(
     'title' => t('Landing Page creator'),
     'page callback' => 'landing_page_creator_form',
-    'access arguments' => array('access content'),
-    'access callback' => TRUE,
+    'access arguments' => array('access landing_page_creator content'),
     'description' => t('Page to submit DOIs request'),
     'type' => MENU_CALLBACK,
   );
@@ -52,7 +50,7 @@ function landing_page_creator_menu() {
 
 function landing_page_creator_form() {
 
-  landing_page_creator_login(drupal_get_destination());
+  //landing_page_creator_login(drupal_get_destination());
 
   return drupal_get_form('creator_form');
 }
@@ -145,12 +143,12 @@ function landing_page_creator_submit($form, &$form_state) {
   $datacite_user = variable_get('username_datacite');
   $datacite_pass = variable_get('pass_datacite');
   $datacite_prefix = variable_get('prefix_datacite');
+  $datacite_url = variable_get('url_datacite','');
 
   // send metadata to datacite
   //curl -H "Content-Type: application/xml;charset=UTF-8" -X POST -i --user username:password -d @$datacite_metadata.xml https://mds.test.datacite.org/metadata
 
   $xml = implode(" ",$datacite_metadata);
-  //drupal_set_message(print_r($xml,TRUE),'warning');
   $options_md = array(
               'method' => 'POST',
               'data' => $xml,
@@ -159,14 +157,17 @@ function landing_page_creator_submit($form, &$form_state) {
                                  'Authorization' => 'Basic ' . base64_encode($datacite_user . (":" . $datacite_pass)),),
   );
 
-  $result = drupal_http_request('https://mds.test.datacite.org/metadata/'.$datacite_prefix, $options_md);
+  $result = drupal_http_request('https://mds.'.$datacite_url.'datacite.org/metadata/'.$datacite_prefix, $options_md);
   //extract DOI from  http response
   if ($result->code == 201) {
      $doi = explode("metadata/", $result->headers['location'])[1];
-     //$doi_uri = 'https://doi.org/'.$doi; // operational env. 
-     $doi_uri = 'https://handle.test.datacite.org/'.$doi; //test env. 
+     if ($datacite_url == 'test.') {
+        $doi_uri = 'https://handle.test.datacite.org/'.$doi; //test env. 
+     }else{
+        $doi_uri = 'https://doi.org/'.$doi; // operational env. 
+     }
   }else{
-     drupal_set_message(print_r('Request status: '.$result->status,TRUE),'warning');
+     drupal_set_message(print_r('Datacite request has failed',TRUE),'warning');
   }
 
   //citation becomes:
@@ -434,7 +435,7 @@ function landing_page_creator_submit($form, &$form_state) {
               'headers' => array('Content-Type' => 'text/plain;charset=UTF-8',
                                  'Authorization' => 'Basic ' . base64_encode($datacite_user . (":" . $datacite_pass)),),
   );
-  $result_reg = drupal_http_request('https://mds.test.datacite.org/doi/'.$doi, $options_url);
+  $result_reg = drupal_http_request('https://mds.'.$datacite_url.'datacite.org/doi/'.$doi, $options_url);
 
   drupal_set_message( "Node with nid " . $node->nid . " saved!\n");
 
