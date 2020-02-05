@@ -23,6 +23,27 @@ depending on the evironment selected (test in the first case, operational in the
 A content type (CT) must be set up in the Drupal site. 
 - the manchine name of the CT: landing_page
 
+| Name | Machine name| type | widget |
+|---   | ---         |---   |---     |
+|body                    |Long text and summary |Text area with a summary  |
+|field_abstract          |Long text and summary |Text area with a summary  |
+|field_iso_topic_category|List (text)           |Select list               |
+|field_doi               |Link                  |Link                      |
+|field_citation          |Long text             |Text area (multiple rows) |
+|field_license           |List (text)           |Select list               |
+|field_contact           |Long text             |Text area (multiple rows) |
+|field_north             |Float                 |Text field                |
+|field_south             |Float                 |Text field                |
+|field_east              |Float                 |Text field                |
+|field_west              |Float                 |Text field                |
+|field_access            |Long text             |Text area (multiple rows) |
+|field_bnds              |Geofield              |Bounds                    |
+|field_start_date        |Date (ISO format)     |Pop-up calendar           |
+|field_end_date          |Date (ISO format)     |Pop-up calendar           |
+|field_lp_tag            |Entity Reference      |Select list               |
+
+
+
 
 
 
