@@ -20,8 +20,13 @@ depending on the evironment selected (test in the first case, operational in the
 - A Landing Page content type must be set up in the portal that is using this module. See below for the configuration of this content type.
 
 ## Configuration of the Landing Page content type
+
+# Content type
+
 A content type (CT) must be set up in the Drupal site. 
 - the manchine name of the CT: landing_page
+
+- the fields of the content type must be as follow:
 
 |Machine name| type | widget |
 |---         |---   |---     |
@@ -41,6 +46,34 @@ A content type (CT) must be set up in the Drupal site.
 |field_start_date        |Date (ISO format)     |Pop-up calendar           |
 |field_end_date          |Date (ISO format)     |Pop-up calendar           |
 |field_lp_tag            |Entity Reference      |Select list               |
+
+
+# Select list: vocabularies
+
+| field | key/values |
+| field_iso_topic_category |
+farming| farming
+biota|biota
+boundaries|boundaries
+climatologyMeteorologyAtmosphere|climatologyMeteorologyAtmosphere
+economy|economy
+elevation|elevation
+environment|environment
+geoscientificInformation|geoscientificInformation
+health |health
+imageryBaseMapsEarthCover|imageryBaseMapsEarthCover
+intelligenceMilitary|intelligenceMilitary
+inlandWaters|inlandWaters
+location|location
+oceans|oceans
+planningCadastre|planningCadastre
+society|society
+structure|structure
+transportation|transportation
+utilitiesCommunication|utilitiesCommunication |  
+
+
+
 
 
 
