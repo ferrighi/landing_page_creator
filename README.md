@@ -52,26 +52,25 @@ A content type (CT) must be set up in the Drupal site.
 
 | field | key | values 
 | ---   | --- | --- 
-| field_iso_topic_category |
-farming| farming
-biota|biota
-boundaries|boundaries
-climatologyMeteorologyAtmosphere|climatologyMeteorologyAtmosphere
-economy|economy
-elevation|elevation
-environment|environment
-geoscientificInformation|geoscientificInformation
-health |health
-imageryBaseMapsEarthCover|imageryBaseMapsEarthCover
-intelligenceMilitary|intelligenceMilitary
-inlandWaters|inlandWaters
-location|location
-oceans|oceans
-planningCadastre|planningCadastre
-society|society
-structure|structure
-transportation|transportation
-utilitiesCommunication|utilitiesCommunication |  
+| field_iso_topic_category | farming| farming
+||biota|biota
+||boundaries|boundaries
+||climatologyMeteorologyAtmosphere|climatologyMeteorologyAtmosphere
+||economy|economy
+||elevation|elevation
+||environment|environment
+||geoscientificInformation|geoscientificInformation
+||health |health
+||imageryBaseMapsEarthCover|imageryBaseMapsEarthCover
+||intelligenceMilitary|intelligenceMilitary
+||inlandWaters|inlandWaters
+||location|location
+||oceans|oceans
+||planningCadastre|planningCadastre
+||society|society
+||structure|structure
+||transportation|transportation
+||utilitiesCommunication|utilitiesCommunication 
 
 
 
