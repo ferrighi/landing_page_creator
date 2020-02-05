@@ -50,7 +50,8 @@ A content type (CT) must be set up in the Drupal site.
 
 # Select list: vocabularies
 
-| field | key/values |
+| field | key | values 
+| ---   | --- | --- 
 | field_iso_topic_category |
 farming| farming
 biota|biota
