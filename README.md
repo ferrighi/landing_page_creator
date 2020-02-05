@@ -45,7 +45,6 @@ A content type (CT) must be set up in the Drupal site.
 |field_bnds              |Geofield              |Bounds                    |
 |field_start_date        |Date (ISO format)     |Pop-up calendar           |
 |field_end_date          |Date (ISO format)     |Pop-up calendar           |
-|field_lp_tag            |Entity Reference      |Select list               |
 
 
 # Select list: vocabularies
@@ -81,15 +80,8 @@ A content type (CT) must be set up in the Drupal site.
 
 | key | values 
 | --- | --- 
-C0|<span class="license-name">CC0</span><a href="https://creativecommons.org/share-your-work/public-domain/cc0/"><img src="/sites/adc.met.no/modules/landing_page_creator/icons/CC0.png" ></a>
-CCBY|<span class="license-name">CC-BY</span><a href="https://creativecommons.org/licenses/by/4.0/"><img src="/sites/adc.met.no/modules/landing_page_creator/icons/CCBY.png" ></a>
-CCBYSA|<span id="license-name">CC BY-SA</span><a href="https://creativecommons.org/licenses/by-sa/3.0/"><img src="/sites/adc.met.no/modules/landing_page_creator/icons/CCBYSA.png" ></a>
-CCBYNC|<span id="license-name">CC BY-NC</span><a href="https://creativecommons.org/licenses/by-nc/4.0/"><img src="/sites/adc.met.no/modules/landing_page_creator/icons/CCBYNC.png" ></a>
-
-
-
-
-
-
-
+|C0|<span class="license-name">CC0</span><a href="https://creativecommons.org/share-your-work/public-domain/cc0/"></a>
+|CCBY|<span class="license-name">CC-BY</span><a href="https://creativecommons.org/licenses/by/4.0/"></a>
+|CCBYSA|<span id="license-name">CC BY-SA</span><a href="https://creativecommons.org/licenses/by-sa/3.0/"></a>
+|CCBYNC|<span id="license-name">CC BY-NC</span><a href="https://creativecommons.org/licenses/by-nc/4.0/"></a>
 
