@@ -3,12 +3,16 @@
 ### Description: 
 A Drupal module to create landing pages associated with DOIs requests. 
 The workflow is the following: 
+- the form page is available at "yoursite/landing-page-creator/form"
 - upload an xml file with mmd specifications
 - the mmd fields are translated into Datacite metadata format using https://github.com/steingod/mmd/blob/master/xslt/mmd-to-datacite.xsl which is included in the module under the includes directory
 - metadata file is sent to Datacite using drupal_http_request
 - DOI is returned and extracted
 - Landing page (a drupal node of type "landing_page") is created using DOI as the landing page url alias
 - URL of the landing page is registered to Datacite using drupal_http_request
+
+### Permission:
+To configure the permissions for this module, i.e. who can access the "landing-page-creator/form" page go to: "People->Permissions" and activate the "Access content for the Landing Page module" for the role of interest.
 
 ### Requirements
 
