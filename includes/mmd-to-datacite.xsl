@@ -22,7 +22,7 @@ First attempt for MMD to DataCite conversion...
 		</xsl:element>
 
                 <xsl:apply-templates select="mmd:metadata_identifier" />
-                <xsl:apply-templates select="mmd:personnel[mmd:role='Investigator']" />
+                <!--xsl:apply-templates select="mmd:personnel[mmd:role='Investigator']" /-->
                 <!-- not implemented yet
 -->
                         <xsl:apply-templates select="mmd:title" />
@@ -204,15 +204,18 @@ First attempt for MMD to DataCite conversion...
             <xsl:value-of select="mmd:publisher" />
         </xsl:element>
 
+        <xsl:element name="creators">
+           <xsl:call-template name="tokenize">
+              <xsl:with-param name="author" select="mmd:author"/>
+           </xsl:call-template>
+	</xsl:element>
+
         <!--xsl:element name="dif:Data_Set_Citation">
             <xsl:element name="dif:Dataset_Creator">
                 <xsl:value-of select="mmd:dataset_creator" />
             </xsl:element>
             <xsl:element name="dif:Dataset_Editor">
                 <xsl:value-of select="mmd:dataset_editor" />
-            </xsl:element>
-            <xsl:element name="dif:Dataset_Title">
-                <xsl:value-of select="mmd:dataset_title" />
             </xsl:element>
             <xsl:element name="dif:Dataset_Series_Name">
                 <xsl:value-of select="mmd:dataset_series_name" />
@@ -232,5 +235,30 @@ First attempt for MMD to DataCite conversion...
         </xsl:element-->
 
     </xsl:template>
+
+    <xsl:template name="tokenize">
+    <xsl:param name="author"/>
+    <xsl:choose>
+        <xsl:when test="contains($author, ',')">
+        <xsl:element name="creator">
+        <xsl:element name="creatorName">
+        <xsl:attribute name="nameType">Personal</xsl:attribute>
+            <xsl:value-of select="substring-before($author, ',')"/>
+        </xsl:element>
+        </xsl:element>
+        <xsl:call-template name="tokenize">
+            <xsl:with-param name="author" select="substring-after($author, ',')"/>
+        </xsl:call-template>
+        </xsl:when>
+        <xsl:otherwise>
+        <xsl:element name="creator">
+        <xsl:element name="creatorName">
+        <xsl:attribute name="nameType">Personal</xsl:attribute>
+            <xsl:value-of select="$author"/>
+        </xsl:element>
+        </xsl:element>
+        </xsl:otherwise>
+    </xsl:choose>
+ </xsl:template>
 
 </xsl:stylesheet>
