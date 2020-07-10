@@ -33,6 +33,10 @@
    font-size: 16px;
 }
 
+.node-landing-page.node-teaser{
+   padding: 1.5em;
+}
+
 .node-landing-page .field-name-field-doi{
    background-color: aliceblue;
    padding-top: 1em;
