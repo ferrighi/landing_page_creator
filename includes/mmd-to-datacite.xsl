@@ -170,8 +170,37 @@ First attempt for MMD to DataCite conversion...
 	<xsl:template match="mmd:use_constraint">
 		<xsl:element name="rightsList">
                     <xsl:element name="rights">
-                        <xsl:attribute name="rightsURI"><xsl:value-of select="." /></xsl:attribute>
-			<xsl:value-of select="." />
+                	<xsl:attribute name="rightsURI">
+                                <xsl:if test=". = 'Public Domain'">
+                                   <xsl:text>http://spdx.org/licenses/CC0-1.0</xsl:text>
+                                </xsl:if>
+                                <xsl:if test=".  ='Attribution'">
+                                   <xsl:text>http://spdx.org/licenses/CC-BY-4.0</xsl:text>
+                                </xsl:if>
+                                <xsl:if test=". = 'Share-alike'">
+                                   <xsl:text>http://spdx.org/licenses/CC-BY-SA-4.0</xsl:text>
+                                </xsl:if>
+                                <xsl:if test=".='Noncommercial'">
+					<xsl:text>http://spdx.org/licenses/CC-BY-NC-4.0</xsl:text>
+                                </xsl:if>
+			</xsl:attribute>
+			<xsl:attribute name="rightsIdentifier">
+                                <xsl:if test=". = 'Public Domain'">
+                                   <xsl:text>CC0-1.0</xsl:text>
+                                </xsl:if>
+                                <xsl:if test=".  ='Attribution'">
+                                   <xsl:text>CC-BY-4.0</xsl:text>
+                                </xsl:if>
+                                <xsl:if test=". = 'Share-alike'">
+                                   <xsl:text>CC-BY-SA-4.0</xsl:text>
+                                </xsl:if>
+                                <xsl:if test=".='Noncommercial'">
+                                   <xsl:text>CC-BY-NC-4.0</xsl:text>
+                                </xsl:if>
+			</xsl:attribute>
+                        <xsl:attribute name="schemeURI">https://spdx.org/licenses/</xsl:attribute>
+                        <xsl:attribute name="rightsIdentifierScheme">SPDX</xsl:attribute>
+                        <xsl:value-of select="." />
                     </xsl:element>
 		</xsl:element>
 	</xsl:template>
