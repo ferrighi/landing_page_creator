@@ -13,6 +13,7 @@ dependencies:
     - field.field.node.landing_page.field_east
     - field.field.node.landing_page.field_end_date
     - field.field.node.landing_page.field_iso_topic_category
+    - field.field.node.landing_page.field_license
     - field.field.node.landing_page.field_north
     - field.field.node.landing_page.field_south
     - field.field.node.landing_page.field_start_date
@@ -50,6 +51,7 @@ hidden:
   field_east: true
   field_end_date: true
   field_iso_topic_category: true
+  field_license: true
   field_north: true
   field_south: true
   field_start_date: true

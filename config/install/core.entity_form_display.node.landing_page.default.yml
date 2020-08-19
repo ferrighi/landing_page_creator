@@ -12,6 +12,7 @@ dependencies:
     - field.field.node.landing_page.field_east
     - field.field.node.landing_page.field_end_date
     - field.field.node.landing_page.field_iso_topic_category
+    - field.field.node.landing_page.field_license
     - field.field.node.landing_page.field_north
     - field.field.node.landing_page.field_south
     - field.field.node.landing_page.field_start_date
@@ -114,6 +115,12 @@ content:
     region: content
   field_iso_topic_category:
     weight: 123
+    settings: {  }
+    third_party_settings: {  }
+    type: options_select
+    region: content
+  field_license:
+    weight: 136
     settings: {  }
     third_party_settings: {  }
     type: options_select

@@ -1,0 +1,32 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - node
+    - options
+id: node.field_license
+field_name: field_license
+entity_type: node
+type: list_string
+settings:
+  allowed_values:
+    -
+      value: CC0
+      label: '<span class="license-name">CC0</span><a href="https://creativecommons.org/share-your-work/public-domain/cc0/"><img src="/icons/dataset-license/CC0.png" ></a>'
+    -
+      value: CCBY
+      label: '<span class="license-name">CC-BY</span><a href="https://creativecommons.org/licenses/by/4.0/"><img src="/icons/dataset-license/CCBY.png" ></a>'
+    -
+      value: CCBYSA
+      label: '<span id="license-name">CC BY-SA</span><a href="https://creativecommons.org/licenses/by-sa/3.0/"><img src="/icons/dataset-license/CCBYSA.png" ></a>'
+    -
+      value: CCBYNC
+      label: '<span id="license-name">CC BY-NC</span><a href="https://creativecommons.org/licenses/by-nc/4.0/"><img src="/icons/dataset-license/CCBYNC.png" ></a>'
+  allowed_values_function: ''
+module: options
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false
