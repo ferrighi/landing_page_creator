@@ -1,0 +1,13 @@
+name : Landing Page Creator 
+description : "Create static page for DOI assignment"
+type: module
+core : 8.x
+
+configure : 
+        landing_page_creator.admin.inc 
+
+stylesheets:
+        all: 
+        - css/landing_page_creator.css : {}
+
+#files[] = includes/mmd-to-datacite.xls
