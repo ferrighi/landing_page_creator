@@ -1,0 +1,59 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.teaser
+    - field.field.node.landing_page.body
+    - field.field.node.landing_page.field_abstract
+    - field.field.node.landing_page.field_access
+    - field.field.node.landing_page.field_bnds
+    - field.field.node.landing_page.field_citation
+    - field.field.node.landing_page.field_contact
+    - field.field.node.landing_page.field_doi
+    - field.field.node.landing_page.field_east
+    - field.field.node.landing_page.field_end_date
+    - field.field.node.landing_page.field_iso_topic_category
+    - field.field.node.landing_page.field_north
+    - field.field.node.landing_page.field_south
+    - field.field.node.landing_page.field_start_date
+    - field.field.node.landing_page.field_tags
+    - field.field.node.landing_page.field_west
+    - node.type.landing_page
+  module:
+    - text
+    - user
+id: node.landing_page.teaser
+targetEntityType: node
+bundle: landing_page
+mode: teaser
+content:
+  body:
+    label: hidden
+    type: text_summary_or_trimmed
+    weight: 101
+    settings:
+      trim_length: 600
+    third_party_settings: {  }
+    region: content
+  links:
+    weight: 100
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+hidden:
+  field_abstract: true
+  field_access: true
+  field_bnds: true
+  field_citation: true
+  field_contact: true
+  field_doi: true
+  field_east: true
+  field_end_date: true
+  field_iso_topic_category: true
+  field_north: true
+  field_south: true
+  field_start_date: true
+  field_tags: true
+  field_west: true
+  langcode: true
+  search_api_excerpt: true

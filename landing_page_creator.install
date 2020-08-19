@@ -1,0 +1,24 @@
+<?php
+
+use Drupal\taxonomy\Entity\Term;
+
+/**
+* Implements hook_install
+*/
+
+function landing_page_creator_install() {
+
+  $vid = 'tags';
+  $new_terms = ['dataset' , 'landing page'];
+
+  foreach ($new_terms as $new) {
+    $term = taxonomy_term_load_multiple_by_name($new, $vid);
+
+    if (empty($term)) {
+      $new_term = Term::create([
+        'name' => $new,
+        'vid' => $vid,
+        ])->save();
+      }
+  }
+}

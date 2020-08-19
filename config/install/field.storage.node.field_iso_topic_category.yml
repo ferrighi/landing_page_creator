@@ -1,0 +1,77 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - node
+    - options
+id: node.field_iso_topic_category
+field_name: field_iso_topic_category
+entity_type: node
+type: list_string
+settings:
+  allowed_values:
+    -
+      value: farming
+      label: farming
+    -
+      value: biota
+      label: biota
+    -
+      value: boundaries
+      label: boundaries
+    -
+      value: climatologyMeteorologyAtmosphere
+      label: climatologyMeteorologyAtmosphere
+    -
+      value: economy
+      label: economy
+    -
+      value: elevation
+      label: elevation
+    -
+      value: environment
+      label: environment
+    -
+      value: geoscientificInformation
+      label: geoscientificInformation
+    -
+      value: health
+      label: health
+    -
+      value: imageryBaseMapsEarthCover
+      label: imageryBaseMapsEarthCover
+    -
+      value: intelligenceMilitary
+      label: intelligenceMilitary
+    -
+      value: inlandWaters
+      label: inlandWaters
+    -
+      value: location
+      label: location
+    -
+      value: oceans
+      label: oceans
+    -
+      value: planningCadastre
+      label: planningCadastre
+    -
+      value: society
+      label: society
+    -
+      value: structure
+      label: structure
+    -
+      value: transportation
+      label: transportation
+    -
+      value: utilitiesCommunication
+      label: utilitiesCommunication
+  allowed_values_function: ''
+module: options
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false
