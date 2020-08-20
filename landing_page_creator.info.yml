@@ -4,6 +4,7 @@ type: module
 core: 8.x
 version: 1.x
 package: METNO
+configure: landing_page_creator.admin_config_form
 dependencies:
   geofield: 'drupal:geofield'
   timepicker: 'drupal:timepicker'

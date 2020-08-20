@@ -27,7 +27,7 @@ class LandingPageCreatorConfigurationForm extends ConfigFormBase {
   */
   protected function getEditableConfigNames() {
     return [
-      'landing_page_creator.confiugration',
+      'landing_page_creator.configuration',
       ];
   }
 
@@ -42,7 +42,7 @@ class LandingPageCreatorConfigurationForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    $config = $this->config('landing_page_creator.confiugration');
+    $config = $this->config('landing_page_creator.configuration');
     $form = array();
 
     $form['#prefix']  = '<h2>DataCite Administration</h2>';
@@ -114,19 +114,19 @@ class LandingPageCreatorConfigurationForm extends ConfigFormBase {
     /**
      * Save the configuration
     */
-    $this->config('landing_page_creator.confiugration')
+    $this->config('landing_page_creator.configuration')
       ->set('username_datacite', $form_state->getValue('username_datacite'))
       ->save();
 
-    $this->config('landing_page_creator.confiugration')
+    $this->config('landing_page_creator.configuration')
       ->set('pass_datacite', $form_state->getValue('pass_datacite'))
       ->save();
 
-    $this->config('landing_page_creator.confiugration')
+    $this->config('landing_page_creator.configuration')
       ->set('prefix_datacite', $form_state->getValue('prefix_datacite'))
       ->save();
 
-    $this->config('landing_page_creator.confiugration')
+    $this->config('landing_page_creator.configuration')
       ->set('url_datacite', $form_state->getValue('url_datacite'))
       ->save();
   }
