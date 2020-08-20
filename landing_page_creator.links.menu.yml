@@ -7,7 +7,7 @@ landing_page_creator.admin_config_form:
   weight: 99
 
 landing_page_creator.landing_page_creator_form:
-  title: 'Landing Page Creator Form'
+  title: 'Landing Page Creator'
   description: 'Page to submit DOIs request'
   route_name: landing_page_creator.landing_page_creator_form
   menu_name: main
