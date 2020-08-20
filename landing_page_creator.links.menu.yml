@@ -14,8 +14,8 @@ landing_page_creator.landing_page_creator_form:
   weight: 0
 
 metno.group.admin:
-    title: 'METNO'
-    route_name: system.admin_config_metno
-    parent: system.admin_config
-    description: 'METNO Configuration'
-    weight: -999
+  title: 'METNO'
+  route_name: system.admin_config_metno
+  parent: system.admin_config
+  description: 'METNO Configuration'
+  weight: -999
