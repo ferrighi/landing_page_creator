@@ -43,7 +43,38 @@ class LandingPageCreatorConfigurationForm extends ConfigFormBase {
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
     $config = $this->config('landing_page_creator.confiugration');
-    $form[''] =;
+    $form = array();
+
+    $form['#prefix']  = '<h2>DataCite Administration</h2>';
+
+    $form['username_datacite'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Enter username'),
+      '#description' => t("the name of the user"),
+    );
+
+    $form['pass_datacite'] = array(
+      '#type' => 'password',
+      '#title' => t('Enter password'),
+      '#description' => t("the password of the user"),
+    );
+
+    $form['prefix_datacite'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Enter prefix'),
+      '#description' => t("the prefix for the account"),
+    );
+
+  // environment
+    $form['url_datacite'] = array(
+      '#type' => 'select',
+      '#options' => array(
+      'test.' => t('test'),
+      '' => t('operational'),
+      ),
+      '#title' => t('Environment'),
+      '#description' => t("Select test or operational environment"),
+    );
 
     return parent::buildForm($form, $form_state);
  }
@@ -54,6 +85,23 @@ class LandingPageCreatorConfigurationForm extends ConfigFormBase {
    * NOTE: Implement form validation here
    */
   public function validateForm(array &$form, FormStateInterface $form_state) {
+    //get user and pass from admin configuration
+    $datacite_user = $form_state->getValue('username_datacite');
+    $datacite_pass = $form_state->getValue('pass_datacite');
+    $datacite_prefix = $form_state->getValue('prefix_datacite');
+
+    if (!isset($datacite_user) || $datacite_user == ''){
+       $form_state->setErrorByName('landing_page_creator', t('You are connecting to DataCite to obtain a DOI. <br>
+                             Configure your Datacite credentials in the configuration interface'));
+    }
+    if (!isset($datacite_pass) || $datacite_pass == ''){
+       $form_state->setErrorByName('landing_page_creator', t('You are connecting to DataCite to obtain a DOI. <br>
+                             Configure your Datacite credentials in the configuration interface'));
+    }
+    if (!isset($datacite_prefix) || $datacite_prefix == ''){
+       $form_state->setErrorByName('landing_page_creator', t('You are connecting to DataCite to obtain a DOI. <br>
+                             Configure your Datacite credentials in the configuration interface'));
+    }
 
   }
 
@@ -66,6 +114,21 @@ class LandingPageCreatorConfigurationForm extends ConfigFormBase {
     /**
      * Save the configuration
     */
+    $this->config('landing_page_creator.confiugration')
+      ->set('username_datacite', $form_state->getValue('username_datacite'))
+      ->save();
+
+    $this->config('landing_page_creator.confiugration')
+      ->set('pass_datacite', $form_state->getValue('pass_datacite'))
+      ->save();
+
+    $this->config('landing_page_creator.confiugration')
+      ->set('prefix_datacite', $form_state->getValue('prefix_datacite'))
+      ->save();
+
+    $this->config('landing_page_creator.confiugration')
+      ->set('url_datacite', $form_state->getValue('url_datacite'))
+      ->save();
   }
 }
 ?>

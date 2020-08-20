@@ -7,4 +7,5 @@ package: METNO
 dependencies:
   geofield: 'drupal:geofield'
   timepicker: 'drupal:timepicker'
+  metatag: 'drupal:metatag'
   0: menu_ui

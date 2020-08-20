@@ -55,4 +55,5 @@ function landing_page_creator_install() {
 
    }
 
+ }
 }

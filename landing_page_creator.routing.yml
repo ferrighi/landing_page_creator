@@ -1,1 +1,27 @@
 # Define routing here for path and forms
+landing_page_creator.landing_page_creator_form:
+  path: '/landing_page_creator/upload'
+  defaults:
+    _form: '\Drupal\landing_page_creator\Form\LandingPageCreatorForm'
+    _title: 'Landing Page Creator Form'
+  requirements:
+    _permission: 'create landing page'
+
+landing_page_creator.admin_config_form:
+    path: '/admin/config/landing_page_creator/configuration'
+    defaults:
+      _form: '\Drupal\landing_page_creator\Form\LandingPageCreatorConfigurationForm'
+      _title: 'Landing Page Creator Configuration Form'
+    requirements:
+      _permission: 'administer site configuration'
+    options:
+      _admin_route: TRUE
+
+system.admin_config_metno:
+  path: '/admin/config/metno'
+  defaults:
+    _controller: '\Drupal\system\Controller\SystemController::systemAdminMenuBlockPage'
+    _title: 'METNO'
+    description: 'METNO Specific configuraton'
+  requirements:
+    _permission: 'administer site configuration'

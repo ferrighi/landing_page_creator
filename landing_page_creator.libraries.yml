@@ -1,1 +1,6 @@
 # Difine CSS/JS Libraries here
+landing_page_creator:
+  version: 1.x
+  css:
+    theme:
+      css/landing_page_creator.css: {}

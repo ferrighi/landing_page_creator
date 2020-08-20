@@ -1,1 +1,21 @@
 #Define menu links here
+landing_page_creator.admin_config_form:
+  title: 'Datacite account configuration'
+  description: 'Configuration for the request of DOI'
+  route_name: landing_page_creator.admin_config_form
+  parent: metsis.group.admin
+  weight: 99
+
+landing_page_creator.landing_page_creator_form:
+  title: 'Landing Page Creator Form'
+  description: 'Page to submit DOIs request'
+  route_name: landing_page_creator.landing_page_creator_form
+  menu_name: main
+  weight: 0
+
+metno.group.admin:
+    title: 'METNO'
+    route_name: system.admin_config_metno
+    parent: system.admin_config
+    description: 'METNO Configuration'
+    weight: -999
