@@ -8,7 +8,7 @@ landing_page_creator.landing_page_creator_form:
     _permission: 'create landing page'
 
 landing_page_creator.admin_config_form:
-  path: '/admin/config/landing_page_creator/configuration'
+  path: '/admin/config/metno/datacite'
   defaults:
     _form: '\Drupal\landing_page_creator\Form\LandingPageCreatorConfigurationForm'
     _title: 'Landing Page Creator Configuration Form'
