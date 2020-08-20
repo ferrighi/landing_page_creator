@@ -9,4 +9,5 @@ dependencies:
   geofield: 'drupal:geofield'
   timepicker: 'drupal:timepicker'
   metatag: 'drupal:metatag'
+  leaflet: 'drupal:leaflet'
   0: menu_ui
