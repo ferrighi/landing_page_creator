@@ -297,7 +297,7 @@ class LandingPageCreatorForm extends FormBase {
          $cit_publ = $v[1];
        }
        //license
-       if ($v[0] == 'use_constraint') {
+       if ($v[0] == 'use_constraint identifier') {
          $license = $v[1];
        }
        if (!isset($license)) {
@@ -365,17 +365,17 @@ class LandingPageCreatorForm extends FormBase {
      $node->field_doi[$node->language][]['url'] = $doi_uri;
 
      // License
-     if ($license == 'Public Domain') {
-        $lic_key = 'CC0';
-     }elseif ($license == 'Attribution'){
-        $lic_key = 'CCBY';
-     }elseif ($license == 'Share-alike'){
-        $lic_key = 'CCBYSA';
-     }elseif ($license == 'Noncommercial'){
-        $lic_key = 'CCBYNC';
-     }
+     //if ($license == 'Public Domain') {
+     //   $lic_key = 'CC0';
+     //}elseif ($license == 'Attribution'){
+     //   $lic_key = 'CCBY';
+     //}elseif ($license == 'Share-alike'){
+     //   $lic_key = 'CCBYSA';
+     //}elseif ($license == 'Noncommercial'){
+     //   $lic_key = 'CCBYNC';
+     //}
 
-     $node->field_license[$node->language][0]['value'] = $lic_key;
+     $node->field_license[$node->language][0]['value'] = $license;
 
 
      // Contact (can be multiple)
