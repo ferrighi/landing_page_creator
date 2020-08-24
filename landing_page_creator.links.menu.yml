@@ -3,7 +3,7 @@ landing_page_creator.admin_config_form:
   title: 'Datacite account configuration'
   description: 'Configuration for the request of DOI'
   route_name: landing_page_creator.admin_config_form
-  parent: metsis.group.admin
+  parent: metno.group.admin
   weight: 99
 
 landing_page_creator.landing_page_creator_form:
