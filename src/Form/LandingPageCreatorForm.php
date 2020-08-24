@@ -68,11 +68,9 @@ class LandingPageCreatorForm extends FormBase {
 
   $form['submit'] = array(
     '#type' => 'submit',
-    '#submit' => array('landing_page_creator_submit'),
     '#value' => t('Submit'),
   );
 
-  $form['#validate'][] = 'datacite_conf_validate';
 
   return $form;
   }
@@ -83,6 +81,26 @@ class LandingPageCreatorForm extends FormBase {
    *
    */
   public function validateForm(array &$form, FormStateInterface $form_state) {
+    // Get the stored datacite config
+    $config = \Drupal::config('landing_page_creator.confiugration');
+
+    $datacite_user = $config->get('username_datacite');
+    $datacite_pass = $config->get('pass_datacite');
+    $datacite_prefix = $config->get('prefix_datacite');
+    $datacite_url = $config->get('url_datacite');
+
+    if (!isset($datacite_user) || $datacite_user == ''){
+        $form_state->setErrorByName('landing_page_creator', t('You are connecting to DataCite to obtain a DOI. <br>
+                             Configure your Datacite credentials in the configuration interface'));
+    }
+    if (!isset($datacite_pass) || $datacite_pass == ''){
+       $form_state->setErrorByName('landing_page_creator', t('You are connecting to DataCite to obtain a DOI. <br>
+                             Configure your Datacite credentials in the configuration interface'));
+    }
+    if (!isset($datacite_prefix) || $datacite_prefix == ''){
+        $form_state->setErrorByName('landing_page_creator', t('You are connecting to DataCite to obtain a DOI. <br>
+                             Configure your Datacite credentials in the configuration interface'));
+    }
   }
  	/*
    * {@inheritdoc}
@@ -110,7 +128,7 @@ class LandingPageCreatorForm extends FormBase {
      $datacite_user = $config->get('username_datacite');
      $datacite_pass = $config->get('pass_datacite');
      $datacite_prefix = $config->get('prefix_datacite');
-     $datacite_url = $config->get('url_datacite','');
+     $datacite_url = $config->get('url_datacite');
 
      // send metadata to datacite
      //curl -H "Content-Type: application/xml;charset=UTF-8" -X POST -i --user username:password -d @$datacite_metadata.xml https://mds.test.datacite.org/metadata
