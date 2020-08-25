@@ -21,6 +21,7 @@ dependencies:
     - field.field.node.landing_page.field_west
     - node.type.landing_page
   module:
+    - link
     - text
     - user
 id: node.landing_page.teaser
@@ -28,26 +29,31 @@ targetEntityType: node
 bundle: landing_page
 mode: teaser
 content:
-  body:
-    label: hidden
-    type: text_summary_or_trimmed
-    weight: 101
-    settings:
-      trim_length: 600
-    third_party_settings: {  }
+  field_abstract:
+    type: text_default
+    weight: 1
     region: content
-  links:
-    weight: 100
+    label: above
     settings: {  }
     third_party_settings: {  }
+  field_doi:
+    type: link
+    weight: 0
     region: content
+    label: inline
+    settings:
+      trim_length: 80
+      url_only: false
+      url_plain: false
+      rel: ''
+      target: ''
+    third_party_settings: {  }
 hidden:
-  field_abstract: true
+  body: true
   field_access: true
   field_bnds: true
   field_citation: true
   field_contact: true
-  field_doi: true
   field_east: true
   field_end_date: true
   field_iso_topic_category: true
@@ -58,4 +64,5 @@ hidden:
   field_tags: true
   field_west: true
   langcode: true
+  links: true
   search_api_excerpt: true

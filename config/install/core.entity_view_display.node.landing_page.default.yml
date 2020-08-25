@@ -21,40 +21,115 @@ dependencies:
     - node.type.landing_page
   module:
     - datetime
+    - field_group
     - leaflet
     - link
     - options
     - text
     - user
+third_party_settings:
+  field_group:
+    group_abs:
+      children:
+        - field_abstract
+        - field_iso_topic_category
+      parent_name: ''
+      weight: 1
+      format_type: fieldset
+      region: content
+      format_settings:
+        description: ''
+        id: ''
+        classes: 'group-abs field-group-fieldset'
+      label: ''
+    group_cit:
+      children:
+        - field_doi
+        - field_citation
+        - field_license
+      parent_name: ''
+      weight: 2
+      format_type: fieldset
+      region: content
+      format_settings:
+        description: ''
+        id: ''
+        classes: 'group-cit field-group-fieldset'
+      label: 'Citation info'
+    group_da:
+      children:
+        - field_access
+      parent_name: ''
+      weight: 3
+      format_type: fieldset
+      region: content
+      format_settings:
+        description: ''
+        id: ''
+        classes: 'group-da field-group-fieldset'
+      label: 'Data Access'
+    group_ct:
+      children:
+        - field_contact
+      parent_name: ''
+      weight: 4
+      format_type: fieldset
+      region: content
+      format_settings:
+        id: ''
+        classes: 'group-ct field-group-fieldset'
+        description: ''
+      label: Contact
+    group_te:
+      children:
+        - field_start_date
+        - field_end_date
+      parent_name: ''
+      weight: 5
+      format_type: fieldset
+      region: content
+      format_settings:
+        id: ''
+        classes: 'group-te field-group-fieldset'
+        description: "Defines the temporal extent or coverage of the dataset. Time is expressed in UTC. \r\nFor collections the end date is empty. \r\n\r\n"
+      label: 'Time Extent'
+    group_ge:
+      children:
+        - field_south
+        - field_north
+        - field_east
+        - field_west
+      parent_name: ''
+      weight: 6
+      format_type: fieldset
+      region: content
+      format_settings:
+        id: ''
+        classes: 'group-ge field-group-fieldset'
+        description: 'Geographical location is expressed with decimal numbers with positive axis Northwards and zero at the Equator (for north and south), and decimal numbers with positive axis Eastwards and zero at the Greenwich meridian (for east and west).'
+      label: 'Geographical Extent'
 id: node.landing_page.default
 targetEntityType: node
 bundle: landing_page
 mode: default
 content:
-  body:
-    label: hidden
-    type: text_default
-    weight: 101
-    settings: {  }
-    third_party_settings: {  }
-    region: content
   field_abstract:
-    weight: 102
+    weight: 2
     label: above
     settings: {  }
     third_party_settings: {  }
     type: text_default
     region: content
   field_access:
-    weight: 111
-    label: above
+    weight: 21
+    label: hidden
     settings: {  }
     third_party_settings: {  }
     type: text_default
     region: content
   field_bnds:
-    weight: 112
-    label: above
+    weight: 0
+    label: hidden
     settings:
       multiple_map: 0
       leaflet_map: 'OSM Mapnik'
@@ -119,22 +194,22 @@ content:
     type: leaflet_formatter_default
     region: content
   field_citation:
-    weight: 105
+    weight: 6
     label: above
     settings: {  }
     third_party_settings: {  }
     type: text_default
     region: content
   field_contact:
-    weight: 106
-    label: above
+    weight: 7
+    label: hidden
     settings: {  }
     third_party_settings: {  }
     type: text_default
     region: content
   field_doi:
-    weight: 104
-    label: above
+    weight: 5
+    label: inline
     settings:
       trim_length: 80
       url_only: false
@@ -145,8 +220,8 @@ content:
     type: link
     region: content
   field_east:
-    weight: 109
-    label: above
+    weight: 12
+    label: inline
     settings:
       thousand_separator: ''
       decimal_separator: .
@@ -156,31 +231,31 @@ content:
     type: number_decimal
     region: content
   field_end_date:
-    weight: 114
-    label: above
+    weight: 13
+    label: inline
     settings:
-      format_type: medium
       timezone_override: ''
+      format_type: short
     third_party_settings: {  }
     type: datetime_default
     region: content
   field_iso_topic_category:
-    weight: 103
-    label: above
+    weight: 3
+    label: inline
     settings: {  }
     third_party_settings: {  }
     type: list_default
     region: content
   field_license:
-    weight: 116
-    label: above
+    weight: 7
+    label: inline
     settings: {  }
     third_party_settings: {  }
     type: list_default
     region: content
   field_north:
-    weight: 107
-    label: above
+    weight: 11
+    label: inline
     settings:
       thousand_separator: ''
       decimal_separator: .
@@ -190,8 +265,8 @@ content:
     type: number_decimal
     region: content
   field_south:
-    weight: 108
-    label: above
+    weight: 10
+    label: inline
     settings:
       thousand_separator: ''
       decimal_separator: .
@@ -201,25 +276,25 @@ content:
     type: number_decimal
     region: content
   field_start_date:
-    weight: 113
-    label: above
+    weight: 12
+    label: inline
     settings:
-      format_type: medium
       timezone_override: ''
+      format_type: short
     third_party_settings: {  }
     type: datetime_default
     region: content
   field_tags:
-    weight: 115
+    type: entity_reference_label
+    weight: 7
+    region: content
     label: above
     settings:
       link: true
     third_party_settings: {  }
-    type: entity_reference_label
-    region: content
   field_west:
-    weight: 110
-    label: above
+    weight: 13
+    label: inline
     settings:
       thousand_separator: ''
       decimal_separator: .
@@ -228,11 +303,8 @@ content:
     third_party_settings: {  }
     type: number_decimal
     region: content
-  links:
-    weight: 100
-    region: content
-    settings: {  }
-    third_party_settings: {  }
 hidden:
+  body: true
   langcode: true
+  links: true
   search_api_excerpt: true
