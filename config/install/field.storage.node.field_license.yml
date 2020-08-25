@@ -1,3 +1,4 @@
+uuid: bf43bbd3-0c76-4817-b3d0-4d9638ab7fd9
 langcode: en
 status: true
 dependencies:
@@ -12,16 +13,16 @@ settings:
   allowed_values:
     -
       value: CC0
-      label: '<span class="license-name">CC0</span><a href="https://creativecommons.org/share-your-work/public-domain/cc0/"><img src="/icons/dataset-license/CC0.png" ></a>'
+      label: '<span class="license-name">CC0</span><a href="https://creativecommons.org/share-your-work/public-domain/cc0/"><img src="/modules/metno/landing_page_creator/icons/CC0.png" ></a>'
     -
       value: CCBY
-      label: '<span class="license-name">CC-BY</span><a href="https://creativecommons.org/licenses/by/4.0/"><img src="/icons/dataset-license/CCBY.png" ></a>'
+      label: '<span class="license-name">CC-BY</span><a href="https://creativecommons.org/licenses/by/4.0/"><img src="/modules/metno/landing_page_creator/icons/CCBY.png" ></a>'
     -
       value: CCBYSA
-      label: '<span id="license-name">CC BY-SA</span><a href="https://creativecommons.org/licenses/by-sa/3.0/"><img src="/icons/dataset-license/CCBYSA.png" ></a>'
+      label: '<span id="license-name">CC BY-SA</span><a href="https://creativecommons.org/licenses/by-sa/3.0/"><img src="/modules/metno/landing_page_creator/icons/CCBYSA.png" ></a>'
     -
       value: CCBYNC
-      label: '<span id="license-name">CC BY-NC</span><a href="https://creativecommons.org/licenses/by-nc/4.0/"><img src="/icons/dataset-license/CCBYNC.png" ></a>'
+      label: '<span id="license-name">CC BY-NC</span><a href="https://creativecommons.org/licenses/by-nc/4.0/"><img src="/modules/metno/landing_page_creator/icons/CCBYNC.png" ></a>'
   allowed_values_function: ''
 module: options
 locked: false
