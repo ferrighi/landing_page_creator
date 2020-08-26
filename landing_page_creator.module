@@ -10,3 +10,9 @@ function landing_page_creator_help($path, $arg) {
       break;
   }
 }
+
+function landing_page_creator_page_attachments(array &$page) {
+  dpm($page);
+
+  $page['#attached']['library'][] = 'landing_page_creator/landing_page_creator';
+}

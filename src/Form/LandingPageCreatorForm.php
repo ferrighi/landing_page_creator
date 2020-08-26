@@ -15,6 +15,8 @@ use \Drupal\Core\Link;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Request;
 use Symfony\Component\HttpFoundation\Response;
+//use SimpleXML\SimpleXMLIterator;
+use Symfony\Component\DependencyInjection;
 
 /*
  * {@inheritdoc}
@@ -82,7 +84,7 @@ class LandingPageCreatorForm extends FormBase {
    */
   public function validateForm(array &$form, FormStateInterface $form_state) {
     // Get the stored datacite config
-    $config = \Drupal::config('landing_page_creator.confiugration');
+  /*  $config = \Drupal::config('landing_page_creator.confiugration');
 
     $datacite_user = $config->get('username_datacite');
     $datacite_pass = $config->get('pass_datacite');
@@ -100,7 +102,7 @@ class LandingPageCreatorForm extends FormBase {
     if (!isset($datacite_prefix) || $datacite_prefix == ''){
         $form_state->setErrorByName('landing_page_creator', t('You are connecting to DataCite to obtain a DOI. <br>
                              Configure your Datacite credentials in the configuration interface'));
-    }
+    }*/
   }
  	/*
    * {@inheritdoc}
@@ -151,7 +153,7 @@ class LandingPageCreatorForm extends FormBase {
       )];
      //$client = \Drupal::httpClient();
      $result = NULL;
-     $url = 'https://mds.'.$datacite_url.'datacite.org/metadata/'.$datacite_prefix;
+  /*   $url = 'https://mds.'.$datacite_url.'datacite.org/metadata/'.$datacite_prefix;
      try {
       $client = \Drupal::httpClient();
       $request = $client->request('POST',$url,$options);
@@ -176,7 +178,7 @@ class LandingPageCreatorForm extends FormBase {
     }*/
 //     $result = drupal_http_request('https://mds.'.$datacite_url.'datacite.org/metadata/'.$datacite_prefix, $options_md);
      //extract DOI from  http response
-     if ($result != NULL && $status == 201) {
+/*     if ($result != NULL && $status == 201) {
         $doi = explode("metadata/", $result->headers['location'])[1];
         if ($datacite_url == 'test.') {
            $doi_uri = 'https://handle.test.datacite.org/'.$doi; //test env.
@@ -185,7 +187,8 @@ class LandingPageCreatorForm extends FormBase {
         }
      }else{
         \Drupal::messenger()->addError(t('Datacite request has failed'));
-     }
+     } */
+     $doi_url = "https://doi.example.com/" . uniqid();
 
      //citation becomes:
      //Creator (PublicationYear): Title. Version. Publisher. (resourceTypeGeneral). Identifier
@@ -473,7 +476,7 @@ class LandingPageCreatorForm extends FormBase {
       )];
      //$client = \Drupal::httpClient();
      $result = NULL;
-     $url = 'https://mds.'.$datacite_url.'datacite.org/doi/';
+  /*   $url = 'https://mds.'.$datacite_url.'datacite.org/doi/';
      try {
       $client = \Drupal::httpClient();
       $request = $client->request('PUT',$url,$options);
@@ -481,8 +484,8 @@ class LandingPageCreatorForm extends FormBase {
     }
     catch (RequestException $e){
       // Log the error.
-      watchdog_exception('custom_modulename', $e);
-    }
+      watchdog_exception('landing_page_creator', $e);
+    }*/
 
     $status =  $resquest->getStatusCode();
     $result = $request->getBody();

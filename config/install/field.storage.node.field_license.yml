@@ -19,10 +19,10 @@ settings:
       label: '<span class="license-name">CC-BY</span><a href="https://creativecommons.org/licenses/by/4.0/"><img src="/modules/metno/landing_page_creator/icons/CCBY.png" ></a>'
     -
       value: CCBYSA
-      label: '<span id="license-name">CC BY-SA</span><a href="https://creativecommons.org/licenses/by-sa/3.0/"><img src="/modules/metno/landing_page_creator/icons/CCBYSA.png" ></a>'
+      label: '<span class="license-name">CC BY-SA</span><a href="https://creativecommons.org/licenses/by-sa/3.0/"><img src="/modules/metno/landing_page_creator/icons/CCBYSA.png" ></a>'
     -
       value: CCBYNC
-      label: '<span id="license-name">CC BY-NC</span><a href="https://creativecommons.org/licenses/by-nc/4.0/"><img src="/modules/metno/landing_page_creator/icons/CCBYNC.png" ></a>'
+      label: '<span class="license-name">CC BY-NC</span><a href="https://creativecommons.org/licenses/by-nc/4.0/"><img src="/modules/metno/landing_page_creator/icons/CCBYNC.png" ></a>'
   allowed_values_function: ''
 module: options
 locked: false

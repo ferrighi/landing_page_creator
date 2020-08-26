@@ -11,13 +11,13 @@
    font-size: 1.5em;
 }
 
-.node-landing-page .license-name {
+.field--name-field-license .license-name {
    display: none;
 }
 
 .node-landing-page .fieldset-description {
-   padding: 1em; 
-   margin: 1em; 
+   padding: 1em;
+   margin: 1em;
    background-color: aliceblue;
 }
 

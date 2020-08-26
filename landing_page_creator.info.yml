@@ -10,4 +10,7 @@ dependencies:
   timepicker: 'drupal:timepicker'
   metatag: 'drupal:metatag'
   leaflet: 'drupal:leaflet'
+  libraries: 'drupal:libraries'
   0: menu_ui
+library_dependencies:
+  - ext-SimpleXML

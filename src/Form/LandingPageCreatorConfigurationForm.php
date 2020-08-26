@@ -75,7 +75,7 @@ class LandingPageCreatorConfigurationForm extends ConfigFormBase {
       '#title' => t('Environment'),
       '#description' => t("Select test or operational environment"),
     );
-
+    $form['#attached']['library'][] = 'landing_page_creator/landing_page_creator';
     return parent::buildForm($form, $form_state);
  }
 
