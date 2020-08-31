@@ -219,8 +219,13 @@ class LandingPageCreatorForm extends FormBase {
     ////get xml object iterator
     $xml = new \SimpleXMLIterator($xml_content); // problem with boolean
     $ns = $xml->getNamespaces(true);
-    //$xml_wns = $xml->children(['mmd']);
-    $xml_wns = $xml->children($ns['mmd']);
+    //$xml_wns = $xml->children(['mmd'])
+    if(isset($ns['mmd'])) {
+      $xml_wns = $xml->children($ns['mmd']);
+    }
+    else {
+      $xml_wns = $xml->children();
+    }
     //dpm(xml_wns);
     $metadata_arr = $this->depth_mmd("", $xml_wns);
     $form_state->setValue('metadata', $metadata_arr);
@@ -480,7 +485,7 @@ class LandingPageCreatorForm extends FormBase {
     ];
 
     //$geo_value = \Drupal::service('geofield.wkt_generator')->WktBuildPolygon($points);
-    $geofield = array(
+  /*  $geofield = array(
       'geom' => "POLYGON ((".$west." ".$north.",".$east." ".$north.",".$east." ".$south.", ".$west." ".$south.",".$west." ".$north.")) ",
       'geo_type' => 'bounds',
       'lat' => "$north",
@@ -490,9 +495,10 @@ class LandingPageCreatorForm extends FormBase {
       'right' => $east,
       'bottom' => $south
     );
-
+*/
     //$node->field_bnds[$node->language][0] = $geofield;
-    $node->set('field_bnds', $geofield);
+    $node->set('field_bnds', "POLYGON(".$west." ".$north.",".$east." ".$north.",".$east." ".$south.", ".$west." ".$south.",".$west." ".$north.")" );
+    //$node->set('field_bnds', $geofield);
     // Access (can be multiple)
     $hr = '';
     for ($cn = 0; $cn < $count_access; $cn++) {
@@ -548,7 +554,7 @@ class LandingPageCreatorForm extends FormBase {
    //$status =  $resquest->getStatusCode();
    //$result = $request->getBody();
    // $result_reg = drupal_http_request('https://mds.'.$datacite_url.'datacite.org/doi/'.$doi, $options_url);
-   \Drupal::messenger()->addMessage('landing_page_creator', t("Node with nid " . $node->id() . " saved!\n"));
+   //\Drupal::messenger()->addMessage('landing_page_creator', t("Node with nid " . $node->id() . " saved!\n"));
     //drupal_set_message( "Node with nid " . $node->nid . " saved!\n");
 
     //$form_state['redirect']  = 'node/'.$node->nid;
