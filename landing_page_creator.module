@@ -12,7 +12,7 @@ function landing_page_creator_help($path, $arg) {
 }
 
 function landing_page_creator_page_attachments(array &$page) {
-  dpm($page);
+  //dpm(get_loaded_extensions());
 
   $page['#attached']['library'][] = 'landing_page_creator/landing_page_creator';
 }

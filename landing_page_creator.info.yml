@@ -11,6 +11,9 @@ dependencies:
   metatag: 'drupal:metatag'
   leaflet: 'drupal:leaflet'
   libraries: 'drupal:libraries'
+  pathauto: 'drupal:pathauto'
+  token: 'drupal:token'
+  ctools: 'drupal:ctools'
   0: menu_ui
 library_dependencies:
   - ext-SimpleXML
