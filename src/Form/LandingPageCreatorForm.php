@@ -226,7 +226,7 @@ class LandingPageCreatorForm extends FormBase {
     else {
       $xml_wns = $xml->children();
     }
-    //dpm(xml_wns);
+    dpm($xml_wns);
     $metadata_arr = $this->depth_mmd("", $xml_wns);
     $form_state->setValue('metadata', $metadata_arr);
     //dpm($metadata_arr);
@@ -256,7 +256,22 @@ class LandingPageCreatorForm extends FormBase {
       }
       if ($v[0] == 'title') {
         $title = $v[1];
+    //    $attributes = $v[0]->attributes("xml", true);
+    // print_r($attributes);
+
+      /*foreach ($attributes as $attributeName => $attributeValue)
+      {
+
+
+        if ($attributeValue == "eng" && $attributeName == "lang") {
+            $title = $v[1];
       }
+      if ($attributeValue == "no" && $attributeName == "lang") {
+        $title_no = $v[1];
+      }
+
+    }*/
+    }
       if ($v[0] == 'abstract') {
         $abstract = $v[1];
       }
@@ -554,7 +569,7 @@ class LandingPageCreatorForm extends FormBase {
    //$status =  $resquest->getStatusCode();
    //$result = $request->getBody();
    // $result_reg = drupal_http_request('https://mds.'.$datacite_url.'datacite.org/doi/'.$doi, $options_url);
-   //\Drupal::messenger()->addMessage('landing_page_creator', t("Node with nid " . $node->id() . " saved!\n"));
+   \Drupal::messenger()->addMessage("Node with nid " . $node->id() . " saved!\n");
     //drupal_set_message( "Node with nid " . $node->nid . " saved!\n");
 
     //$form_state['redirect']  = 'node/'.$node->nid;
@@ -570,6 +585,7 @@ class LandingPageCreatorForm extends FormBase {
     //$url = Url::fromRoute('entity.node.canonical', [ 'node' => $node->id()]);
 
     //clearstatcache();
+    //$form_state->addMessage($this->t("Node with nid " . $node->id() . " saved!\n"));
     $form_state->setRedirectUrl($url);
     // Redirect the user.
     //$response = new RedirectResponse($url);
