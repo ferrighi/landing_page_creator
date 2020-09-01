@@ -24,6 +24,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Drupal\serialization\Encoder\XmlEncoder;
 use XSLTProcessor;
 use SimpleXMLElement;
+use \Drupal\Core\StringTranslation\TranslatableMarkup;
 /*
  * {@inheritdoc}
  * Form class for the bokeh init form
@@ -215,9 +216,25 @@ class LandingPageCreatorForm extends FormBase {
       //\Drupal::messenger()->message('', $furi);
     // $xml_content = file_get_contents($furi); // this is a string from gettype
     $xml_content = file_get_contents($furi); // this is a string from gettype
+    //$xml_path = $this->xmlToXpath($xml_content);
+    //dpm($xml_path);
+    $dom =new \DOMDocument;
+    $dom->loadXML ($xml_content);
+    foreach( $dom->getElementsByTagName( 'title' ) as $node ) {
+      if( $node->getAttribute( 'xml:lang' ) === 'en') {
+        $title_en = $node->nodeValue;
+      }
+    }
 
+    foreach( $dom->getElementsByTagName( 'abstract' ) as $node ) {
+      if( $node->getAttribute( 'xml:lang' ) === 'en') {
+        $abstract_en = $node->nodeValue;
+      }
+    }
+    //dpm($title_en);
     ////get xml object iterator
     $xml = new \SimpleXMLIterator($xml_content); // problem with boolean
+    //dpm($xml_content);
     $ns = $xml->getNamespaces(true);
     //$xml_wns = $xml->children(['mmd'])
     if(isset($ns['mmd'])) {
@@ -226,7 +243,7 @@ class LandingPageCreatorForm extends FormBase {
     else {
       $xml_wns = $xml->children();
     }
-    dpm($xml_wns);
+    //dpm($xml_wns);
     $metadata_arr = $this->depth_mmd("", $xml_wns);
     $form_state->setValue('metadata', $metadata_arr);
     //dpm($metadata_arr);
@@ -256,22 +273,7 @@ class LandingPageCreatorForm extends FormBase {
       }
       if ($v[0] == 'title') {
         $title = $v[1];
-    //    $attributes = $v[0]->attributes("xml", true);
-    // print_r($attributes);
-
-      /*foreach ($attributes as $attributeName => $attributeValue)
-      {
-
-
-        if ($attributeValue == "eng" && $attributeName == "lang") {
-            $title = $v[1];
       }
-      if ($attributeValue == "no" && $attributeName == "lang") {
-        $title_no = $v[1];
-      }
-
-    }*/
-    }
       if ($v[0] == 'abstract') {
         $abstract = $v[1];
       }
@@ -388,6 +390,9 @@ class LandingPageCreatorForm extends FormBase {
     // Comment is 0, 1, 2; 0 = disabled, 1 = read only, or 2 = read/write.
     $node->comment = 0;
  */
+ if(isset($title_en)) {
+   $title = $title_en;
+ }
     $node = Node::create([
      // The node entity bundle.
      'type' => 'landing_page',
@@ -407,7 +412,12 @@ class LandingPageCreatorForm extends FormBase {
 
     // Abstract
     //$node->field_abstract[$node->language][]['value'] = $abstract;
-    $node->set('field_abstract', $abstract);
+    if(isset($abstract_en)) {
+      $node->set('field_abstract', $abstract_en);
+    }
+    else {
+      $node->set('field_abstract', $abstract);
+    }
     // Iso topic categories (can be multiple)
     for ($cn = 0; $cn < $count_itc; $cn++) {
       //$node->field_iso_topic_category[$node->language][$cn]['value'] = $itc_list[$cn];
@@ -489,7 +499,7 @@ class LandingPageCreatorForm extends FormBase {
       $node->set('field_south', $south);
       $node->set('field_east',  $east);
       $node->set('field_west', $west);
-
+/*
       $points = [
         'extent' => [
         'left' => $west,
@@ -498,7 +508,7 @@ class LandingPageCreatorForm extends FormBase {
         'bottom' => $south,
       ],
     ];
-
+*/
     //$geo_value = \Drupal::service('geofield.wkt_generator')->WktBuildPolygon($points);
   /*  $geofield = array(
       'geom' => "POLYGON ((".$west." ".$north.",".$east." ".$north.",".$east." ".$south.", ".$west." ".$south.",".$west." ".$north.")) ",
@@ -569,7 +579,10 @@ class LandingPageCreatorForm extends FormBase {
    //$status =  $resquest->getStatusCode();
    //$result = $request->getBody();
    // $result_reg = drupal_http_request('https://mds.'.$datacite_url.'datacite.org/doi/'.$doi, $options_url);
-   \Drupal::messenger()->addMessage("Node with nid " . $node->id() . " saved!\n");
+   $message = "Created landing page: <b>" .$title .'</b>, with node id:' . $node->id();
+   $rendered_message = \Drupal\Core\Render\Markup::create($message);
+   $status_message = new TranslatableMarkup ('@message', array('@message' => $rendered_message));
+   \Drupal::messenger()->addMessage($status_message);
     //drupal_set_message( "Node with nid " . $node->nid . " saved!\n");
 
     //$form_state['redirect']  = 'node/'.$node->nid;
@@ -578,21 +591,13 @@ class LandingPageCreatorForm extends FormBase {
     //$url = \Drupal::url($routeName, $routeParameters);
     $path = '/node/' . $node->id();
     $alias = \Drupal::service('path.alias_manager')->getAliasByPath($path);
-    //dpm($alias);
-    //$form_state->setRedirect($node->toUrl());
-    //return new RedirectResponse($url);
+
     $url = Url::fromUri('internal:' . $alias);
     //$url = Url::fromRoute('entity.node.canonical', [ 'node' => $node->id()]);
 
-    //clearstatcache();
-    //$form_state->addMessage($this->t("Node with nid " . $node->id() . " saved!\n"));
+
     $form_state->setRedirectUrl($url);
-    // Redirect the user.
-    //$response = new RedirectResponse($url);
-    //return $response; // When using $response->send(); messages are not displayed for anonymous users.
-    //\Drupal::service('page_cache_kill_switch')->trigger();
-// 'Kill page cache' or add 'exit;' at the end to prevent: "Failed to start the session..." @See: #2852657
-    //$form_state->setRedirect('landing_page_creator.landing_page_creator_form');
+
  }
 
  // extract mmd to the last child
@@ -614,6 +619,71 @@ class LandingPageCreatorForm extends FormBase {
      }
    }
    return $kv_a; //this function returns an array of arrys
+}
+
+function sxiToXpath($sxi, $key = null, &$tmp = null)
+{
+    $keys_arr = array();
+    //get the keys count array
+    for ($sxi->rewind(); $sxi->valid(); $sxi->next())
+    {
+        $sk = $sxi->key();
+        if (array_key_exists($sk, $keys_arr))
+        {
+            $keys_arr[$sk]+=1;
+            $keys_arr[$sk] = $keys_arr[$sk];
+        }
+        else
+        {
+            $keys_arr[$sk] = 1;
+        }
+    }
+    //create the xpath
+    for ($sxi->rewind(); $sxi->valid(); $sxi->next())
+    {
+        $sk = $sxi->key();
+        if (!isset($$sk))
+        {
+            $$sk = 1;
+        }
+        if ($keys_arr[$sk] >= 1)
+        {
+            $spk = $sk . '[' . $$sk . ']';
+            $keys_arr[$sk] = $keys_arr[$sk] - 1;
+            $$sk++;
+        }
+        else
+        {
+            $spk = $sk;
+        }
+        $kp = $key ? $key . '/' . $spk : '/' . $sxi->getName() . '/' . $spk;
+        if ($sxi->hasChildren())
+        {
+            $this->sxiToXpath($sxi->getChildren(), $kp, $tmp);
+        }
+        else
+        {
+            $tmp[$kp] = strval($sxi->current());
+        }
+        $at = $sxi->current()->attributes();
+        if ($at)
+        {
+            $tmp_kp = $kp;
+            foreach ($at as $k => $v)
+            {
+                $kp .= '/@' . $k;
+                $tmp[$kp] = $v;
+                $kp = $tmp_kp;
+            }
+        }
+    }
+    return $tmp;
+}
+
+function xmlToXpath($xml)
+{
+    $sxi = new \SimpleXmlIterator($xml);
+    return $this->sxiToXpath($sxi);
 }
 
 }
