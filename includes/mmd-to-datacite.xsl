@@ -25,7 +25,9 @@ First attempt for MMD to DataCite conversion...
                 <!--xsl:apply-templates select="mmd:personnel[mmd:role='Investigator']" /-->
                 <!-- not implemented yet
 -->
-                        <xsl:apply-templates select="mmd:title" />
+		        <xsl:element name="titles">
+		            <xsl:apply-templates select="mmd:title" />
+		        </xsl:element>
                         <!--xsl:apply-templates select="mmd:data_center" /-->
                         <!-- Should reflect PublicationYear, which is
                              missing now...
@@ -60,11 +62,9 @@ First attempt for MMD to DataCite conversion...
         </xsl:template>
 
 	<xsl:template match="mmd:title">
-		<xsl:element name="titles">
-                    <xsl:element name="title">
-			<xsl:value-of select="." />
-                    </xsl:element>
-		</xsl:element>
+		<xsl:element name="title">
+		    <xsl:value-of select="." />
+                </xsl:element>
 	</xsl:template>
 
 	<xsl:template match="mmd:abstract">
