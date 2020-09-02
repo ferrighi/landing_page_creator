@@ -152,11 +152,12 @@ class LandingPageCreatorForm extends FormBase {
      $datacite_pass = $config->get('pass_datacite');
      $datacite_prefix = $config->get('prefix_datacite');
      $datacite_url = $config->get('url_datacite');
-     var_dump($datacite_user, $datacite_pass, $datacite_prefix,$datacite_url);
+     //var_dump($datacite_user, $datacite_pass, $datacite_prefix,$datacite_url);
      // send metadata to datacite
      //curl -H "Content-Type: application/xml;charset=UTF-8" -X POST -i --user username:password -d @$datacite_metadata.xml https://mds.test.datacite.org/metadata
 
      $xml = implode(" ",$datacite_metadata);
+     //var_dump($xml);
      $options_md = array(
                  'method' => 'POST',
                  'data' => $xml,
@@ -165,13 +166,14 @@ class LandingPageCreatorForm extends FormBase {
                                     'Authorization' => 'Basic ' . base64_encode($datacite_user . (":" . $datacite_pass)),),
      );
      $options = [
-      'connect_timeout' => 30,
-      'debug' => false,
+      'timeout' => 30,
+      'debug' => true,
       'body' => $xml,
       'auth' => [$datacite_user, $datacite_pass],
       'headers' => array(
         'Accept' => 'application/xml',
         'Content-Type' => 'application/xml;charset=UTF-8',
+        //'Authorization' => 'Basic ' . base64_encode($datacite_user . ":" . $datacite_pass),
       )];
      //$client = \Drupal::httpClient();
      $result = NULL;
@@ -188,9 +190,9 @@ class LandingPageCreatorForm extends FormBase {
       watchdog_exception('landing_page_creator', $e);
     }
 
-    $status =  $response->getStatusCode();
-    $result = $response->getBody();
-    var_dump($status, $result);
+    //$status =  $response->getStatusCode();
+    //$result = $response->getBody();
+    //var_dump($status, $result);
 /*
     $request = $client->createRequest(array('GET', $uri));
     $result = NULL;
@@ -214,7 +216,7 @@ class LandingPageCreatorForm extends FormBase {
         \Drupal::messenger()->addError(t('Datacite request has failed'));
      }
      //$doi_url = "https://doi.example.com/" . uniqid();
-     var_dump($doi_uri);
+     dpm($doi_uri);
      // For static DOI testing
      //$doi = bin2hex(random_bytes(5)) . '/' . bin2hex(random_bytes(6));
      //citation becomes:
