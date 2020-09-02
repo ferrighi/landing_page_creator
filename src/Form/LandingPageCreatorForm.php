@@ -157,6 +157,7 @@ class LandingPageCreatorForm extends FormBase {
      //curl -H "Content-Type: application/xml;charset=UTF-8" -X POST -i --user username:password -d @$datacite_metadata.xml https://mds.test.datacite.org/metadata
 
      $xml = implode(" ",$datacite_metadata);
+
      //var_dump($xml);
      $options_md = array(
                  'method' => 'POST',
@@ -167,7 +168,7 @@ class LandingPageCreatorForm extends FormBase {
      );
      $options = [
       'timeout' => 30,
-      'debug' => true,
+      'debug' => false,
       'body' => $xml,
       'auth' => [$datacite_user, $datacite_pass],
       'headers' => array(
@@ -178,7 +179,6 @@ class LandingPageCreatorForm extends FormBase {
      //$client = \Drupal::httpClient();
      $result = NULL;
      $url = 'https://mds.'. $datacite_url .'datacite.org/metadata/'. $datacite_prefix;
-     var_dump($url);
      $client = new Client();
      $response = NULL;
      try {
@@ -190,9 +190,10 @@ class LandingPageCreatorForm extends FormBase {
       watchdog_exception('landing_page_creator', $e);
     }
 
-    //$status =  $response->getStatusCode();
+    $status =  $response->getStatusCode();
     //$result = $response->getBody();
-    //var_dump($status, $result);
+    //dpm($status);
+    //dpm($response);
 /*
     $request = $client->createRequest(array('GET', $uri));
     $result = NULL;
@@ -205,8 +206,9 @@ class LandingPageCreatorForm extends FormBase {
     }*/
 //     $result = drupal_http_request('https://mds.'.$datacite_url.'datacite.org/metadata/'.$datacite_prefix, $options_md);
      //extract DOI from  http response
-     if ($result != NULL && $status == 201) {
-        $doi = explode("metadata/", $result->headers['location'])[1];
+    if ($response != NULL && $status == 201) {
+        $doi = explode("metadata/", $response->getHeader('Location')[0])[1];
+
         if ($datacite_url == 'test.') {
            $doi_uri = 'https://handle.test.datacite.org/'.$doi; //test env.
         }else{
@@ -215,8 +217,8 @@ class LandingPageCreatorForm extends FormBase {
      }else{
         \Drupal::messenger()->addError(t('Datacite request has failed'));
      }
-     //$doi_url = "https://doi.example.com/" . uniqid();
-     dpm($doi_uri);
+  //   $doi_uri = "https://doi.example.com/" . uniqid();
+     //dpm($doi_uri);
      // For static DOI testing
      //$doi = bin2hex(random_bytes(5)) . '/' . bin2hex(random_bytes(6));
      //citation becomes:
@@ -452,7 +454,7 @@ class LandingPageCreatorForm extends FormBase {
 
     // DOI
     //$node->field_doi[$node->language][]['url'] = $doi_uri;
-    $node->set('field_doi', $doi_url);
+    $node->set('field_doi', $doi_uri);
     // License
     //if ($license == 'Public Domain') {
     //   $lic_key = 'CC0';
@@ -559,37 +561,39 @@ class LandingPageCreatorForm extends FormBase {
     $options_url = array(
                 'method' => 'PUT',
                 //'data' => "$(printf 'doi='.$doi.'\nurl='.$base_url.'/'.$node->path['alias'])",
-                'data' => 'doi='.$doi."\nurl=".$base_url.'/'.\Drupal::service('path.alias_manager')->getAliasByPath('/datasets/' . $doi),
+                'data' => 'doi='.$doi."\nurl=".$base_url.\Drupal::service('path.alias_manager')->getAliasByPath('/datasets/' . $doi),
                 'timeout' => 25,
                 'headers' => array('Content-Type' => 'text/plain;charset=UTF-8',
                                    'Authorization' => 'Basic ' . base64_encode($datacite_user . (":" . $datacite_pass)),),
     );
-
+    $body_content = 'doi='.$doi."\nurl=".$base_url.\Drupal::service('path.alias_manager')->getAliasByPath('/datasets/' . $doi);
+    //dpm($body_content);
     $options = [
      'connect_timeout' => 30,
-     'debug' => false,
+     'debug' => true,
      'auth' => [$datacite_user, $datacite_pass],
-     'body' => 'doi='.$doi."\nurl=".$base_url.'/'.\Drupal::service('path.alias_manager')->getAliasByPath('/datasets/' . $doi),
+     'body' => $body_content,
      'headers' => array(
        'Content-Type' => 'text/plain;charset=UTF-8',
      )];
     //$client = \Drupal::httpClient();
-    $result = NULL;
-    $url = 'https://mds.'.$datacite_url.'datacite.org/doi/';
+    $result_reg = NULL;
+    $client = new Client();
+    $url = 'https://mds.'.$datacite_url.'datacite.org/doi/' .$doi;
     try {
      //$client = \Drupal::httpClient();
-     $request = $client->put($url, $options);
+     $result_reg = $client->put($url, $options);
 
    }
    catch (RequestException $e){
      // Log the error.
      watchdog_exception('landing_page_creator', $e);
    }
-   dpm($request);
-   //$status =  $resquest->getStatusCode();
+   //dpm($result_reg);
+   //dpm($result_reg->getStatusCode());
    //$result = $request->getBody();
    // $result_reg = drupal_http_request('https://mds.'.$datacite_url.'datacite.org/doi/'.$doi, $options_url);
-   $message = "Created landing page: <b>" .$title .'</b>, with node id:' . $node->id();
+   $message = "Created landing page: <b>" .$title .'</b>, with node id ' . $node->id() . ' '. $result_reg->getReasonPhrase() .'!';
    $rendered_message = \Drupal\Core\Render\Markup::create($message);
    $status_message = new TranslatableMarkup ('@message', array('@message' => $rendered_message));
    \Drupal::messenger()->addMessage($status_message);
