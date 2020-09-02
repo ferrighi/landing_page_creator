@@ -51,18 +51,21 @@ class LandingPageCreatorConfigurationForm extends ConfigFormBase {
       '#type' => 'textfield',
       '#title' => t('Enter username'),
       '#description' => t("the name of the user"),
+      '#default_value' => $config->get('username_datacite'),
     );
 
     $form['pass_datacite'] = array(
       '#type' => 'password',
       '#title' => t('Enter password'),
       '#description' => t("the password of the user"),
+      '#value' => $config->get('pass_datacite'),
     );
 
     $form['prefix_datacite'] = array(
       '#type' => 'textfield',
       '#title' => t('Enter prefix'),
       '#description' => t("the prefix for the account"),
+      '#default_value' => $config->get('prefix_datacite'),
     );
 
   // environment
@@ -74,6 +77,7 @@ class LandingPageCreatorConfigurationForm extends ConfigFormBase {
       ),
       '#title' => t('Environment'),
       '#description' => t("Select test or operational environment"),
+      '#default_value' => $config->get('url_datacite'),
     );
     $form['#attached']['library'][] = 'landing_page_creator/landing_page_creator';
     return parent::buildForm($form, $form_state);
@@ -131,4 +135,3 @@ class LandingPageCreatorConfigurationForm extends ConfigFormBase {
       ->save();
   }
 }
-?>

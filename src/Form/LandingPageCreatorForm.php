@@ -154,7 +154,7 @@ class LandingPageCreatorForm extends FormBase {
      // send metadata to datacite
      //curl -H "Content-Type: application/xml;charset=UTF-8" -X POST -i --user username:password -d @$datacite_metadata.xml https://mds.test.datacite.org/metadata
 
-/*     $xml = implode(" ",$datacite_metadata);
+     $xml = implode(" ",$datacite_metadata);
      $options_md = array(
                  'method' => 'POST',
                  'data' => $xml,
@@ -172,7 +172,7 @@ class LandingPageCreatorForm extends FormBase {
       )];
      //$client = \Drupal::httpClient();
      $result = NULL;
-  /*   $url = 'https://mds.'.$datacite_url.'datacite.org/metadata/'.$datacite_prefix;
+     $url = 'https://mds.'.$datacite_url.'datacite.org/metadata/'.$datacite_prefix;
      try {
       $client = \Drupal::httpClient();
       $request = $client->request('POST',$url,$options);
@@ -182,7 +182,7 @@ class LandingPageCreatorForm extends FormBase {
       // Log the error.
       watchdog_exception('custom_modulename', $e);
     }
-
+    dpm($request);
     $status =  $resquest->getStatusCode();
     $result = $request->getBody();
 /*
@@ -197,7 +197,7 @@ class LandingPageCreatorForm extends FormBase {
     }*/
 //     $result = drupal_http_request('https://mds.'.$datacite_url.'datacite.org/metadata/'.$datacite_prefix, $options_md);
      //extract DOI from  http response
-/*     if ($result != NULL && $status == 201) {
+     if ($result != NULL && $status == 201) {
         $doi = explode("metadata/", $result->headers['location'])[1];
         if ($datacite_url == 'test.') {
            $doi_uri = 'https://handle.test.datacite.org/'.$doi; //test env.
@@ -206,11 +206,11 @@ class LandingPageCreatorForm extends FormBase {
         }
      }else{
         \Drupal::messenger()->addError(t('Datacite request has failed'));
-     } */
-     $doi_url = "https://doi.example.com/" . uniqid();
+     } 
+     //$doi_url = "https://doi.example.com/" . uniqid();
 
      // For static DOI testing
-     $doi = bin2hex(random_bytes(5)) . '/' . bin2hex(random_bytes(6));
+     //$doi = bin2hex(random_bytes(5)) . '/' . bin2hex(random_bytes(6));
      //citation becomes:
      //Creator (PublicationYear): Title. Version. Publisher. (resourceTypeGeneral). Identifier
       //\Drupal::messenger()->message('', $furi);
@@ -544,6 +544,7 @@ class LandingPageCreatorForm extends FormBase {
     //$node = node_submit($node); // Prepare node for saving
     //node_save($node);
     $node->save();
+
   //register the url to datacite
   //curl -H "Content-Type:text/plain;charset=UTF-8" -X PUT --user username:password -d "$(printf 'doi=10.5438/JQX3-61AT\nurl=http://example.org/')" https://mds.test.datacite.org/doi/10.5438/JQX3-61AT
 
@@ -565,7 +566,7 @@ class LandingPageCreatorForm extends FormBase {
      )];
     //$client = \Drupal::httpClient();
     $result = NULL;
- /*   $url = 'https://mds.'.$datacite_url.'datacite.org/doi/';
+    $url = 'https://mds.'.$datacite_url.'datacite.org/doi/';
     try {
      $client = \Drupal::httpClient();
      $request = $client->request('PUT',$url,$options);
@@ -574,8 +575,8 @@ class LandingPageCreatorForm extends FormBase {
    catch (RequestException $e){
      // Log the error.
      watchdog_exception('landing_page_creator', $e);
-   }*/
-
+   }
+   dpm($request);
    //$status =  $resquest->getStatusCode();
    //$result = $request->getBody();
    // $result_reg = drupal_http_request('https://mds.'.$datacite_url.'datacite.org/doi/'.$doi, $options_url);
