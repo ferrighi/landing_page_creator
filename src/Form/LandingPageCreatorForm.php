@@ -570,7 +570,7 @@ class LandingPageCreatorForm extends FormBase {
     //dpm($body_content);
     $options = [
      'connect_timeout' => 30,
-     'debug' => true,
+     'debug' => false,
      'auth' => [$datacite_user, $datacite_pass],
      'body' => $body_content,
      'headers' => array(
