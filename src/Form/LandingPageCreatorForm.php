@@ -15,7 +15,9 @@ use Drupal\Core\Link;
 use Drupal\Core\Url;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Request;
-use Symfony\Component\HttpFoundation\Response;
+use GuzzleHttp\Psr7\Response;
+use GuzzleHttp\Client;
+//use Symfony\Component\HttpFoundation\Response;
 use Drupal\file\Entity\File;
 use Drupal\node\Entity\Node;
 use Symfony\Component\DependencyInjection;
@@ -144,13 +146,13 @@ class LandingPageCreatorForm extends FormBase {
      //$datacite_metadata = $xslt->transformToXml(new SimpleXMLElement($parent));
 
      // Get the stored datacite config
-     $config = \Drupal::config('landing_page_creator.confiugration');
+     $config = \Drupal::config('landing_page_creator.configuration');
 
      $datacite_user = $config->get('username_datacite');
      $datacite_pass = $config->get('pass_datacite');
      $datacite_prefix = $config->get('prefix_datacite');
      $datacite_url = $config->get('url_datacite');
-
+     var_dump($datacite_user, $datacite_pass, $datacite_prefix,$datacite_url);
      // send metadata to datacite
      //curl -H "Content-Type: application/xml;charset=UTF-8" -X POST -i --user username:password -d @$datacite_metadata.xml https://mds.test.datacite.org/metadata
 
@@ -173,19 +175,22 @@ class LandingPageCreatorForm extends FormBase {
       )];
      //$client = \Drupal::httpClient();
      $result = NULL;
-     $url = 'https://mds.'.$datacite_url.'datacite.org/metadata/'.$datacite_prefix;
+     $url = 'https://mds.'. $datacite_url .'datacite.org/metadata/'. $datacite_prefix;
+     var_dump($url);
+     $client = new Client();
+     $response = NULL;
      try {
-      $client = \Drupal::httpClient();
-      $request = $client->request('POST',$url,$options);
+      $response = $client->post($url, $options);
 
     }
     catch (RequestException $e){
       // Log the error.
-      watchdog_exception('custom_modulename', $e);
+      watchdog_exception('landing_page_creator', $e);
     }
-    dpm($request);
-    $status =  $request->getStatusCode();
-    $result = $request->getBody();
+
+    $status =  $response->getStatusCode();
+    $result = $response->getBody();
+    var_dump($status, $result);
 /*
     $request = $client->createRequest(array('GET', $uri));
     $result = NULL;
@@ -209,7 +214,7 @@ class LandingPageCreatorForm extends FormBase {
         \Drupal::messenger()->addError(t('Datacite request has failed'));
      }
      //$doi_url = "https://doi.example.com/" . uniqid();
-
+     var_dump($doi_uri);
      // For static DOI testing
      //$doi = bin2hex(random_bytes(5)) . '/' . bin2hex(random_bytes(6));
      //citation becomes:
@@ -561,6 +566,7 @@ class LandingPageCreatorForm extends FormBase {
     $options = [
      'connect_timeout' => 30,
      'debug' => false,
+     'auth' => [$datacite_user, $datacite_pass],
      'body' => 'doi='.$doi."\nurl=".$base_url.'/'.\Drupal::service('path.alias_manager')->getAliasByPath('/datasets/' . $doi),
      'headers' => array(
        'Content-Type' => 'text/plain;charset=UTF-8',
@@ -569,8 +575,8 @@ class LandingPageCreatorForm extends FormBase {
     $result = NULL;
     $url = 'https://mds.'.$datacite_url.'datacite.org/doi/';
     try {
-     $client = \Drupal::httpClient();
-     $request = $client->request('PUT',$url,$options);
+     //$client = \Drupal::httpClient();
+     $request = $client->put($url, $options);
 
    }
    catch (RequestException $e){

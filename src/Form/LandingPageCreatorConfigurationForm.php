@@ -113,25 +113,16 @@ class LandingPageCreatorConfigurationForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    parent::submitForm($form, $form_state);
 
     /**
      * Save the configuration
     */
-    $this->config('landing_page_creator.configuration')
+    $this->configFactory->getEditable('landing_page_creator.configuration')
       ->set('username_datacite', $form_state->getValue('username_datacite'))
-      ->save();
-
-    $this->config('landing_page_creator.configuration')
       ->set('pass_datacite', $form_state->getValue('pass_datacite'))
-      ->save();
-
-    $this->config('landing_page_creator.configuration')
       ->set('prefix_datacite', $form_state->getValue('prefix_datacite'))
-      ->save();
-
-    $this->config('landing_page_creator.configuration')
       ->set('url_datacite', $form_state->getValue('url_datacite'))
       ->save();
+    parent::submitForm($form, $form_state);
   }
 }
