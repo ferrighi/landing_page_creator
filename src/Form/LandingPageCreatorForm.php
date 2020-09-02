@@ -169,6 +169,7 @@ class LandingPageCreatorForm extends FormBase {
       'headers' => array(
         'Accept' => 'application/xml',
         'Content-Type' => 'application/xml;charset=UTF-8',
+        'Authorization' => 'Basic ' . base64_encode($datacite_user . (":" . $datacite_pass)),
       )];
      //$client = \Drupal::httpClient();
      $result = NULL;
