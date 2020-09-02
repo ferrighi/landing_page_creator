@@ -183,7 +183,7 @@ class LandingPageCreatorForm extends FormBase {
       watchdog_exception('custom_modulename', $e);
     }
     dpm($request);
-    $status =  $resquest->getStatusCode();
+    $status =  $request->getStatusCode();
     $result = $request->getBody();
 /*
     $request = $client->createRequest(array('GET', $uri));
@@ -206,7 +206,7 @@ class LandingPageCreatorForm extends FormBase {
         }
      }else{
         \Drupal::messenger()->addError(t('Datacite request has failed'));
-     } 
+     }
      //$doi_url = "https://doi.example.com/" . uniqid();
 
      // For static DOI testing
