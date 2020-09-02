@@ -21,7 +21,9 @@ First attempt for MMD to DataCite conversion...
 		    <xsl:value-of select="substring-before(' ',' ')"/>
 		</xsl:element>
 
-                <xsl:apply-templates select="mmd:metadata_identifier" />
+                <xsl:element name="alternateIdentifiers">
+                   <xsl:apply-templates select="mmd:metadata_identifier" />
+                </xsl:element>
                 <!--xsl:apply-templates select="mmd:personnel[mmd:role='Investigator']" /-->
                 <!-- not implemented yet
 -->
