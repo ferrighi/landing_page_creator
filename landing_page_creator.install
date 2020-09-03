@@ -73,5 +73,7 @@ function landing_page_creator_uninstall() {
   $content_type = \Drupal::entityTypeManager()
     ->getStorage('node_type')
     ->load('landing_page');
-  $content_type->delete();
+if(isset($content_type)) {
+	$content_type->delete();
+}
 }
