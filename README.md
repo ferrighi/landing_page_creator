@@ -14,6 +14,8 @@ The workflow is the following:
 ### Permission:
 To configure the permissions for this module, i.e. who can access the "landing-page-creator/form" page go to: "People->Permissions" and activate the "Access content for the Landing Page module" for the role of interest.
 
+### Drupal 8 specific information:
+The module should be placed in <web_root>/modules/metno for it to work properly
 ### Requirements
 
 This module requires installation and/or configuration of external services as well as the creation of a specific content type . More specifically:   

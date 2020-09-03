@@ -7,6 +7,7 @@ package: METNO
 configure: landing_page_creator.admin_config_form
 dependencies:
   geofield: 'drupal:geofield'
+  filed_group: 'drupal:field_group'
   timepicker: 'drupal:timepicker'
   metatag: 'drupal:metatag'
   leaflet: 'drupal:leaflet'
