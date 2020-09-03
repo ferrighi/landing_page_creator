@@ -93,7 +93,7 @@ class LandingPageCreatorForm extends FormBase {
    */
   public function validateForm(array &$form, FormStateInterface $form_state) {
     // Get the stored datacite config
-  /*  $config = \Drupal::config('landing_page_creator.confiugration');
+    $config = \Drupal::config('landing_page_creator.confiugration');
 
     $datacite_user = $config->get('username_datacite');
     $datacite_pass = $config->get('pass_datacite');
@@ -111,7 +111,7 @@ class LandingPageCreatorForm extends FormBase {
     if (!isset($datacite_prefix) || $datacite_prefix == ''){
         $form_state->setErrorByName('landing_page_creator', t('You are connecting to DataCite to obtain a DOI. <br>
                              Configure your Datacite credentials in the configuration interface'));
-    }*/
+    }
   }
  	/*
    * {@inheritdoc}
@@ -126,8 +126,6 @@ class LandingPageCreatorForm extends FormBase {
      global $base_path;
 
      // uploaded file with mmd specifications
-     //$furi = $form_state->getValue('xml_file', FALSE); //["#file"]->uri;
-    //dpm($furi);
     $form_file = $form_state->getValue('xml_file', FALSE);
     if (isset($form_file[0]) && !empty($form_file[0])) {
       $file = File::load($form_file[0]);
@@ -157,15 +155,6 @@ class LandingPageCreatorForm extends FormBase {
      //curl -H "Content-Type: application/xml;charset=UTF-8" -X POST -i --user username:password -d @$datacite_metadata.xml https://mds.test.datacite.org/metadata
 
      $xml = implode(" ",$datacite_metadata);
-
-     //var_dump($xml);
-     $options_md = array(
-                 'method' => 'POST',
-                 'data' => $xml,
-                 'timeout' => 25,
-                 'headers' => array('Content-Type' => 'application/xml;charset=UTF-8',
-                                    'Authorization' => 'Basic ' . base64_encode($datacite_user . (":" . $datacite_pass)),),
-     );
      $options = [
       'timeout' => 30,
       'debug' => false,
@@ -174,9 +163,8 @@ class LandingPageCreatorForm extends FormBase {
       'headers' => array(
         'Accept' => 'application/xml',
         'Content-Type' => 'application/xml;charset=UTF-8',
-        //'Authorization' => 'Basic ' . base64_encode($datacite_user . ":" . $datacite_pass),
       )];
-     //$client = \Drupal::httpClient();
+
      $result = NULL;
      $url = 'https://mds.'. $datacite_url .'datacite.org/metadata/'. $datacite_prefix;
      $client = new Client();
@@ -191,19 +179,7 @@ class LandingPageCreatorForm extends FormBase {
     }
 
     $status =  $response->getStatusCode();
-    //$result = $response->getBody();
-    //dpm($status);
-    //dpm($response);
-/*
-    $request = $client->createRequest(array('GET', $uri));
-    $result = NULL;
-    try {
-      $response = $client->get($uri);
-      $result = $response->getBody();
-    }
-    catch (RequestException $e) {
-      watchdog_exception('metsis_lib', $e);
-    }*/
+
 //     $result = drupal_http_request('https://mds.'.$datacite_url.'datacite.org/metadata/'.$datacite_prefix, $options_md);
      //extract DOI from  http response
     if ($response != NULL && $status == 201) {
@@ -217,17 +193,9 @@ class LandingPageCreatorForm extends FormBase {
      }else{
         \Drupal::messenger()->addError(t('Datacite request has failed'));
      }
-  //   $doi_uri = "https://doi.example.com/" . uniqid();
-     //dpm($doi_uri);
-     // For static DOI testing
-     //$doi = bin2hex(random_bytes(5)) . '/' . bin2hex(random_bytes(6));
-     //citation becomes:
-     //Creator (PublicationYear): Title. Version. Publisher. (resourceTypeGeneral). Identifier
-      //\Drupal::messenger()->message('', $furi);
-    // $xml_content = file_get_contents($furi); // this is a string from gettype
+
     $xml_content = file_get_contents($furi); // this is a string from gettype
-    //$xml_path = $this->xmlToXpath($xml_content);
-    //dpm($xml_path);
+
     $dom =new \DOMDocument;
     $dom->loadXML ($xml_content);
     foreach( $dom->getElementsByTagName( 'title' ) as $node ) {
@@ -241,7 +209,7 @@ class LandingPageCreatorForm extends FormBase {
         $abstract_en = $node->nodeValue;
       }
     }
-    //dpm($title_en);
+
     ////get xml object iterator
     $xml = new \SimpleXMLIterator($xml_content); // problem with boolean
     //dpm($xml_content);
@@ -253,7 +221,7 @@ class LandingPageCreatorForm extends FormBase {
     else {
       $xml_wns = $xml->children();
     }
-    //dpm($xml_wns);
+
     $metadata_arr = $this->depth_mmd("", $xml_wns);
     $form_state->setValue('metadata', $metadata_arr);
     //dpm($metadata_arr);
@@ -385,21 +353,7 @@ class LandingPageCreatorForm extends FormBase {
 
 
     //define landing page node
- /*   $node = new stdClass();
-    $node->title = $title;
-    $node->type = "landing_page";
-    // Sets some defaults. Invokes hook_prepare() and hook_node_prepare().
-    node_object_prepare($node);
-    // Or e.g. 'en' if locale is enabled.
-    $node->language = LANGUAGE_NONE;
-    $node->uid = $user->uid;
-    // Status is 1 or 0; published or not.
-    $node->status = 1;
-    // Promote is 1 or 0; promoted to front page or not.
-    $node->promote = 0;
-    // Comment is 0, 1, 2; 0 = disabled, 1 = read only, or 2 = read/write.
-    $node->comment = 0;
- */
+ //Use english title if available
  if(isset($title_en)) {
    $title = $title_en;
  }
@@ -421,6 +375,7 @@ class LandingPageCreatorForm extends FormBase {
     // Fill in the landing page node with content extracted from mmd and datacite response
 
     // Abstract
+    // Use english abstract if available
     //$node->field_abstract[$node->language][]['value'] = $abstract;
     if(isset($abstract_en)) {
       $node->set('field_abstract', $abstract_en);
@@ -479,10 +434,10 @@ class LandingPageCreatorForm extends FormBase {
         //                                                    <strong>Institution: </strong>'.$inst_list[$cn],
         //                                                  'format' => 'full_html',
         //
-      $node->set('field_contact', array('value' => $hr.'<strong>Role: </strong>'.$role_list[$cn].'
-                                                              <strong>Name: </strong>'.$name_list[$cn].'
-                                                              <strong>email: </strong>'.$email_list[$cn].'
-                                                              <strong>Institution: </strong>'.$inst_list[$cn],
+      $node->set('field_contact', array('value' => $hr.'<p><strong>Role: </strong>'.$role_list[$cn].'</p>
+                                                              <p><strong>Name: </strong>'.$name_list[$cn].'</p>
+                                                              <p><strong>email: </strong>'.$email_list[$cn].'</p>
+                                                              <p><strong>Institution: </strong>'.$inst_list[$cn].'</p>',
                                                             'format' => 'full_html',
                                                       ));
 
@@ -541,8 +496,8 @@ class LandingPageCreatorForm extends FormBase {
                                                                         <strong>Resource: </strong><a href='.$dar_list[$cn].'>'.$dar_list[$cn].'</a>',
                                                         'format' => 'full_html',
                                                       ); */
-    $node->set('field_access', array('value' => $hr.'<strong>Type: </strong>'.$dat_list[$cn].'
-                              <strong>Resource: </strong><a href='.$dar_list[$cn].'>'.$dar_list[$cn].'</a>',
+    $node->set('field_access', array('value' => $hr.'<p><strong>Type: </strong>'.$dat_list[$cn].'</p>
+                              <p><strong>Resource: </strong><a href='.$dar_list[$cn].'>'.$dar_list[$cn].'</a></p>',
                               'format' => 'full_html',
                             ));
       $hr = '<hr>';
@@ -558,14 +513,7 @@ class LandingPageCreatorForm extends FormBase {
   //register the url to datacite
   //curl -H "Content-Type:text/plain;charset=UTF-8" -X PUT --user username:password -d "$(printf 'doi=10.5438/JQX3-61AT\nurl=http://example.org/')" https://mds.test.datacite.org/doi/10.5438/JQX3-61AT
 
-    $options_url = array(
-                'method' => 'PUT',
-                //'data' => "$(printf 'doi='.$doi.'\nurl='.$base_url.'/'.$node->path['alias'])",
-                'data' => 'doi='.$doi."\nurl=".$base_url.\Drupal::service('path.alias_manager')->getAliasByPath('/datasets/' . $doi),
-                'timeout' => 25,
-                'headers' => array('Content-Type' => 'text/plain;charset=UTF-8',
-                                   'Authorization' => 'Basic ' . base64_encode($datacite_user . (":" . $datacite_pass)),),
-    );
+s
     $body_content = 'doi='.$doi."\nurl=".$base_url.\Drupal::service('path.alias_manager')->getAliasByPath('/datasets/' . $doi);
     //dpm($body_content);
     $options = [
