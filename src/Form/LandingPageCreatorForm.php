@@ -422,7 +422,7 @@ class LandingPageCreatorForm extends FormBase {
     //}
 
     //$node->field_license[$node->language][0]['value'] = $license;
-      $node->set('field_license', $license);
+      $node->set('field_license', trim($license));
 
 
     // Contact (can be multiple)
@@ -455,10 +455,6 @@ class LandingPageCreatorForm extends FormBase {
     }
 
     // bounding box
-    //$node->field_north[$node->language][]['value'] = $north;
-    //$node->field_south[$node->language][]['value'] = $south;
-    //$node->field_east[$node->language][]['value']  = $east;
-    //$node->field_west[$node->language][]['value']  = $west;
 
       $node->set('field_north', $north);
       $node->set('field_south', $south);
@@ -475,17 +471,8 @@ class LandingPageCreatorForm extends FormBase {
     ];
 */
     //$geo_value = \Drupal::service('geofield.wkt_generator')->WktBuildPolygon($points);
-  /*  $geofield = array(
-      'geom' => "POLYGON ((".$west." ".$north.",".$east." ".$north.",".$east." ".$south.", ".$west." ".$south.",".$west." ".$north.")) ",
-      'geo_type' => 'bounds',
-      'lat' => "$north",
-      'lon' => "$east",
-      'left' => $west,
-      'top' => $north,
-      'right' => $east,
-      'bottom' => $south
-    );
-*/
+
+
     //$node->field_bnds[$node->language][0] = $geofield;
     $node->set('field_bnds', "POLYGON(".$west." ".$north.",".$east." ".$north.",".$east." ".$south.", ".$west." ".$south.",".$west." ".$north.")" );
     //$node->set('field_bnds', $geofield);
@@ -528,20 +515,26 @@ class LandingPageCreatorForm extends FormBase {
     $result_reg = NULL;
     $client = new Client();
     $url = 'https://mds.'.$datacite_url.'datacite.org/doi/' .$doi;
-    try {
-     //$client = \Drupal::httpClient();
-     $result_reg = $client->put($url, $options);
 
-   }
-   catch (RequestException $e){
-     // Log the error.
-     watchdog_exception('landing_page_creator', $e);
-   }
+/**
+ * TODO: Register web call commentet out for now due to testing...Will need to remove
+ * comments and switch $message statement when going in prod
+ */
+//    try {
+//     //$client = \Drupal::httpClient();
+//     $result_reg = $client->put($url, $options);
+//
+//   }
+//   catch (RequestException $e){
+//     // Log the error.
+//     watchdog_exception('landing_page_creator', $e);
+//   }
    //dpm($result_reg);
    //dpm($result_reg->getStatusCode());
    //$result = $request->getBody();
    // $result_reg = drupal_http_request('https://mds.'.$datacite_url.'datacite.org/doi/'.$doi, $options_url);
-   $message = "Created landing page: <b>" .$title .'</b>, with node id ' . $node->id() . ' '. $result_reg->getReasonPhrase() .'!';
+   //$message = "Created landing page: <b>" .$title .'</b>, with node id ' . $node->id() . ' '. $result_reg->getReasonPhrase() .'!';
+   $message = "Created landing page: <b>" .$title .'</b>, with node id ' . $node->id() . ' created!';
    $rendered_message = \Drupal\Core\Render\Markup::create($message);
    $status_message = new TranslatableMarkup ('@message', array('@message' => $rendered_message));
    \Drupal::messenger()->addMessage($status_message);
