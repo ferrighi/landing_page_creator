@@ -5,7 +5,7 @@
  */
 function landing_page_creator_help($path, $arg) {
   switch ($path) {
-    case "admin/help#landing_page_creator":
+    case "help.page.landing_page_creator":
       return t("Create landing pages for assignment of DOIs");
       break;
   }
