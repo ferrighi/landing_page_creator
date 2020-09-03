@@ -513,7 +513,7 @@ class LandingPageCreatorForm extends FormBase {
   //register the url to datacite
   //curl -H "Content-Type:text/plain;charset=UTF-8" -X PUT --user username:password -d "$(printf 'doi=10.5438/JQX3-61AT\nurl=http://example.org/')" https://mds.test.datacite.org/doi/10.5438/JQX3-61AT
 
-s
+
     $body_content = 'doi='.$doi."\nurl=".$base_url.\Drupal::service('path.alias_manager')->getAliasByPath('/datasets/' . $doi);
     //dpm($body_content);
     $options = [
