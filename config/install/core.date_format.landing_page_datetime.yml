@@ -5,4 +5,4 @@ dependencies: {  }
 id: landing_page_datetime
 label: landing_page_datetime
 locked: false
-pattern: 'Y-m-d\TH:i:s'
+pattern: 'Y-m-d\TH:i:s\Z'
