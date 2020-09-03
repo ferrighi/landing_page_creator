@@ -93,7 +93,7 @@ class LandingPageCreatorForm extends FormBase {
    */
   public function validateForm(array &$form, FormStateInterface $form_state) {
     // Get the stored datacite config
-    $config = \Drupal::config('landing_page_creator.confiugration');
+    $config = \Drupal::config('landing_page_creator.configuration');
 
     $datacite_user = $config->get('username_datacite');
     $datacite_pass = $config->get('pass_datacite');
