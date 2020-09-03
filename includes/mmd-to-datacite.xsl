@@ -65,6 +65,9 @@ First attempt for MMD to DataCite conversion...
 
 	<xsl:template match="mmd:title">
 		<xsl:element name="title">
+		    <xsl:if test="@xml:lang != 'en'">
+                        <xsl:attribute name="titleType">TranslatedTitle</xsl:attribute>
+		    </xsl:if>
 		    <xsl:value-of select="." />
                 </xsl:element>
 	</xsl:template>
