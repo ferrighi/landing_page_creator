@@ -1,3 +1,4 @@
+uuid: 77f84b92-c49b-46b1-af01-a30b10577cfd
 langcode: en
 status: true
 dependencies:
@@ -13,6 +14,7 @@ dependencies:
     - field.field.node.landing_page.field_end_date
     - field.field.node.landing_page.field_iso_topic_category
     - field.field.node.landing_page.field_license
+    - field.field.node.landing_page.field_metatag
     - field.field.node.landing_page.field_north
     - field.field.node.landing_page.field_south
     - field.field.node.landing_page.field_start_date
@@ -235,7 +237,7 @@ content:
     label: inline
     settings:
       timezone_override: ''
-      format_type: short
+      format_type: landing_page_datetime
     third_party_settings: {  }
     type: datetime_default
     region: content
@@ -280,7 +282,7 @@ content:
     label: inline
     settings:
       timezone_override: ''
-      format_type: short
+      format_type: landing_page_datetime
     third_party_settings: {  }
     type: datetime_default
     region: content
@@ -305,6 +307,6 @@ content:
     region: content
 hidden:
   body: true
-  langcode: true
+  field_metatag: true
   links: true
   search_api_excerpt: true

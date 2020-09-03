@@ -20,7 +20,6 @@ settings:
     -
       value: CCBY-4.0
       label: '<span class="license-name">CC-BY-4.0</span><a href="https://creativecommons.org/licenses/by/4.0/"><img src="/modules/metno/landing_page_creator/icons/CCBY.png" ></a>'
-
     -
       value: CCBYSA
       label: '<span class="license-name">CC BY-SA</span><a href="https://creativecommons.org/licenses/by-sa/3.0/"><img src="/modules/metno/landing_page_creator/icons/CCBYSA.png" ></a>'

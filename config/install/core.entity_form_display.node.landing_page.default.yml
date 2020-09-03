@@ -1,3 +1,4 @@
+uuid: fe602ee7-6c91-4c46-bf36-680fd864f22d
 langcode: en
 status: true
 dependencies:
@@ -166,7 +167,7 @@ content:
     third_party_settings: {  }
 hidden:
   created: true
-  langcode: true
+  field_metatag: true
   path: true
   promote: true
   status: true
