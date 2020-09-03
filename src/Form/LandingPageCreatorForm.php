@@ -494,9 +494,9 @@ class LandingPageCreatorForm extends FormBase {
     //$node->field_start_date[$node->language][]['value'] = date('Y-m-d\TH:i:s', strtotime($start_date));
     $node->set('field_start_date', date('Y-m-d\TH:i:s', strtotime($start_date)));
     if ($end_date != ''){
-         $node->set('field_start_date', date('Y-m-d\TH:i:s', strtotime($end_date)));
+         $node->set('field_end_date', date('Y-m-d\TH:i:s', strtotime($end_date)));
     }else{
-        $node->set('field_start_date',  null);
+        $node->set('field_end_date',  null);
     }
 
     // bounding box
