@@ -1,4 +1,3 @@
-uuid: 6151db64-452b-47d2-9eac-3bae8a00be71
 langcode: en
 status: true
 dependencies:
@@ -15,6 +14,7 @@ dependencies:
     - field.field.node.landing_page.field_end_date
     - field.field.node.landing_page.field_iso_topic_category
     - field.field.node.landing_page.field_license
+    - field.field.node.landing_page.field_meta_tags
     - field.field.node.landing_page.field_north
     - field.field.node.landing_page.field_south
     - field.field.node.landing_page.field_start_date
@@ -59,7 +59,7 @@ hidden:
   field_end_date: true
   field_iso_topic_category: true
   field_license: true
-  field_metatag: true
+  field_meta_tags: true
   field_north: true
   field_south: true
   field_start_date: true
