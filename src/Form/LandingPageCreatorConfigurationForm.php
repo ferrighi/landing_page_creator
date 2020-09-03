@@ -43,7 +43,7 @@ class LandingPageCreatorConfigurationForm extends ConfigFormBase {
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
     $config = $this->config('landing_page_creator.configuration');
-    $form = array();
+    //$form = array();
 
     $form['#prefix']  = '<h2>DataCite Administration</h2>';
 
@@ -58,7 +58,7 @@ class LandingPageCreatorConfigurationForm extends ConfigFormBase {
       '#type' => 'password',
       '#title' => t('Enter password'),
       '#description' => t("the password of the user"),
-      '#value' => $config->get('pass_datacite'),
+      '#default_value' => $config->get('pass_datacite'),
     );
 
     $form['prefix_datacite'] = array(
@@ -96,15 +96,18 @@ class LandingPageCreatorConfigurationForm extends ConfigFormBase {
 
     if (!isset($datacite_user) || $datacite_user == ''){
        $form_state->setErrorByName('landing_page_creator', t('You are connecting to DataCite to obtain a DOI. <br>
-                             Configure your Datacite credentials in the configuration interface'));
+			     Configure your Datacite credentials in the configuration interface. <br>
+				Username missing'));
     }
     if (!isset($datacite_pass) || $datacite_pass == ''){
        $form_state->setErrorByName('landing_page_creator', t('You are connecting to DataCite to obtain a DOI. <br>
-                             Configure your Datacite credentials in the configuration interface'));
+			     Configure your Datacite credentials in the configuration interface. <br>
+				Password missing'));
     }
     if (!isset($datacite_prefix) || $datacite_prefix == ''){
        $form_state->setErrorByName('landing_page_creator', t('You are connecting to DataCite to obtain a DOI. <br>
-                             Configure your Datacite credentials in the configuration interface'));
+			     Configure your Datacite credentials in the configuration interface. <br>
+				Prefix missing'));
     }
 
   }
