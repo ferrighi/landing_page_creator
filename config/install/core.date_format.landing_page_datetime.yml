@@ -1,0 +1,8 @@
+uuid: f24bb8d9-db77-4136-aa96-7ca57c091b9e
+langcode: en
+status: true
+dependencies: {  }
+id: landing_page_datetime
+label: landing_page_datetime
+locked: false
+pattern: 'Y-m-d\TH:i:s'
