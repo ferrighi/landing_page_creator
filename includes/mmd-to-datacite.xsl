@@ -249,7 +249,7 @@ First attempt for MMD to DataCite conversion...
         <xsl:when test="contains($author, ',')">
         <xsl:element name="creator">
         <xsl:element name="creatorName">
-        <xsl:attribute name="nameType">Personal</xsl:attribute>
+        <!--xsl:attribute name="nameType">Personal</xsl:attribute-->
             <xsl:value-of select="substring-before($author, ',')"/>
         </xsl:element>
         </xsl:element>
@@ -260,7 +260,7 @@ First attempt for MMD to DataCite conversion...
         <xsl:otherwise>
         <xsl:element name="creator">
         <xsl:element name="creatorName">
-        <xsl:attribute name="nameType">Personal</xsl:attribute>
+        <!--xsl:attribute name="nameType">Personal</xsl:attribute-->
             <xsl:value-of select="$author"/>
         </xsl:element>
         </xsl:element>
