@@ -1,12 +1,9 @@
-uuid: 92a9a03b-f74f-441c-a962-97a8f11f2ff8
 langcode: en
 status: true
 dependencies:
   module:
     - node
     - options
-_core:
-  default_config_hash: cgGIEkv3uoZBPQo2O1FkUSE5cuvM_J9-jHT0v4lP-34
 id: node.field_license
 field_name: field_license
 entity_type: node

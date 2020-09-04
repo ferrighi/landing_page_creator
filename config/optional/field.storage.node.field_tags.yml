@@ -3,15 +3,16 @@ status: true
 dependencies:
   module:
     - node
-    - text
-id: node.field_citation
-field_name: field_citation
+    - taxonomy
+id: node.field_tags
+field_name: field_tags
 entity_type: node
-type: text_long
-settings: {  }
-module: text
+type: entity_reference
+settings:
+  target_type: taxonomy_term
+module: core
 locked: false
-cardinality: 1
+cardinality: -1
 translatable: true
 indexes: {  }
 persist_with_no_fields: false

@@ -9,7 +9,7 @@ id: node.landing_page.field_metatag
 field_name: field_metatag
 entity_type: node
 bundle: landing_page
-label: west
+label: 'Meta tags'
 description: 'Metatag field to describe landing page entries'
 required: false
 translatable: false
