@@ -1,10 +1,11 @@
-uuid: a7b76002-b66f-45c9-a8fa-b0f9c9a6af56
 langcode: en
 status: true
 dependencies:
   config:
     - field.storage.node.field_metatag
     - node.type.landing_page
+  module:
+    - metatag
 id: node.landing_page.field_metatag
 field_name: field_metatag
 entity_type: node
@@ -16,4 +17,4 @@ translatable: false
 default_value: {  }
 default_value_callback: ''
 settings: {  }
-field_type: float
+field_type: metatag

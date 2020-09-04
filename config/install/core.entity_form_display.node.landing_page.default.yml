@@ -13,7 +13,7 @@ dependencies:
     - field.field.node.landing_page.field_end_date
     - field.field.node.landing_page.field_iso_topic_category
     - field.field.node.landing_page.field_license
-    - field.field.node.landing_page.field_meta_tags
+    - field.field.node.landing_page.field_metatag
     - field.field.node.landing_page.field_north
     - field.field.node.landing_page.field_south
     - field.field.node.landing_page.field_start_date
@@ -110,7 +110,7 @@ content:
     third_party_settings: {  }
     type: options_select
     region: content
-  field_meta_tags:
+  field_metatag:
     weight: 26
     settings:
       sidebar: true
