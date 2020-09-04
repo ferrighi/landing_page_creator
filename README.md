@@ -1,5 +1,10 @@
 ## Module: Landing Page Creator (landing_page_creator)
 
+Authors: Lara Ferrighi, laraf@met.no
+         Magnar Eivind Martinsen, magnarem@met.no 
+
+
+
 ### Description: 
 A Drupal module to create landing pages associated with DOIs requests. 
 The workflow is the following: 
@@ -91,8 +96,10 @@ A content type (CT) must be set up in the Drupal site.
 
 | key | values 
 | --- | --- 
-|C0|<span class="license-name">CC0</span><a href="https://creativecommons.org/share-your-work/public-domain/cc0/"><img src="icons/CC0.png" ></a>
-|CCBY|<span class="license-name">CC-BY</span><a href="https://creativecommons.org/licenses/by/4.0/"><img src="icons/CC0.png" ></a>
-|CCBYSA|<span id="license-name">CC BY-SA</span><a href="https://creativecommons.org/licenses/by-sa/3.0/"><img src="icons/CCBYSA.png" ></a>
-|CCBYNC|<span id="license-name">CC BY-NC</span><a href="https://creativecommons.org/licenses/by-nc/4.0/"><img src="icons/CCBYNC.png" ></a>
-
+|CC0-1.0|<span class="license-name">CC0-1.0</span><a href="http://spdx.org/licenses/CC0-1.0 "><img src="/modules/metno/landing_page_creator/icons/CC0.png" ></a>
+|CC-BY-4.0|<span class="license-name">CC-BY-4.0</span><a href="http://spdx.org/licenses/CC-BY-4.0"><img src="/modules/metno/landing_page_creator/icons/CCBY.png" ></a>
+|CC-BY-SA-4.0|<span class="license-name">CC-BY-SA-4.0</span><a href="http://spdx.org/licenses/CC-BY-SA-4.0"><img src="/modules/metno/landing_page_creator/icons/CCBYSA.png" ></a>
+|CC-BY-NC-4.0|<span class="license-name">CC-BY-NC-4.0</span><a href="http://spdx.org/licenses/CC-BY-NC-4.0"><img src="/modules/metno/landing_page_creator/icons/CCBYNC.png" ></a>
+|CC-BY-NC-SA-4.0| <span class="license-name">CC-BY-NC-SA-4.0</span><a href="http://spdx.org/licenses/CC-BY-NC-SA-4.0"><img src="/modules/metno/landing_page_creator/icons/CCBYNCSA.png" ></a>
+|CC-BY-ND-4.0|<span class="license-name">CC-BY-ND-4.0</span><a href="http://spdx.org/licenses/CC-BY-ND-4.0"><img src="/modules/metno/landing_page_creator/icons/CCBYND.png" ></a>
+|CC-BY-NC-ND-4.0| <span class="license-name">CC-BY-NC-ND-4.0</span><a href="http://spdx.org/licenses/CC-BY-NC-ND-4.0"><img src="/modules/metno/landing_page_creator/icons/CCBYNCND.png" ></a>
