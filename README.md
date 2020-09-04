@@ -96,10 +96,10 @@ A content type (CT) must be set up in the Drupal site.
 
 | key | values 
 | --- | --- 
-|CC0-1.0|<span class="license-name">CC0-1.0</span><a href="http://spdx.org/licenses/CC0-1.0 "><img src="/modules/metno/landing_page_creator/icons/CC0.png" ></a>
-|CC-BY-4.0|<span class="license-name">CC-BY-4.0</span><a href="http://spdx.org/licenses/CC-BY-4.0"><img src="/modules/metno/landing_page_creator/icons/CCBY.png" ></a>
-|CC-BY-SA-4.0|<span class="license-name">CC-BY-SA-4.0</span><a href="http://spdx.org/licenses/CC-BY-SA-4.0"><img src="/modules/metno/landing_page_creator/icons/CCBYSA.png" ></a>
-|CC-BY-NC-4.0|<span class="license-name">CC-BY-NC-4.0</span><a href="http://spdx.org/licenses/CC-BY-NC-4.0"><img src="/modules/metno/landing_page_creator/icons/CCBYNC.png" ></a>
-|CC-BY-NC-SA-4.0| <span class="license-name">CC-BY-NC-SA-4.0</span><a href="http://spdx.org/licenses/CC-BY-NC-SA-4.0"><img src="/modules/metno/landing_page_creator/icons/CCBYNCSA.png" ></a>
-|CC-BY-ND-4.0|<span class="license-name">CC-BY-ND-4.0</span><a href="http://spdx.org/licenses/CC-BY-ND-4.0"><img src="/modules/metno/landing_page_creator/icons/CCBYND.png" ></a>
-|CC-BY-NC-ND-4.0| <span class="license-name">CC-BY-NC-ND-4.0</span><a href="http://spdx.org/licenses/CC-BY-NC-ND-4.0"><img src="/modules/metno/landing_page_creator/icons/CCBYNCND.png" ></a>
+|CC0-1.0|<span class="license-name">CC0-1.0</span><a href="http://spdx.org/licenses/CC0-1.0 "><img src="icons/CC0.png" ></a>
+|CC-BY-4.0|<span class="license-name">CC-BY-4.0</span><a href="http://spdx.org/licenses/CC-BY-4.0"><img src="icons/CCBY.png" ></a>
+|CC-BY-SA-4.0|<span class="license-name">CC-BY-SA-4.0</span><a href="http://spdx.org/licenses/CC-BY-SA-4.0"><img src="icons/CCBYSA.png" ></a>
+|CC-BY-NC-4.0|<span class="license-name">CC-BY-NC-4.0</span><a href="http://spdx.org/licenses/CC-BY-NC-4.0"><img src="icons/CCBYNC.png" ></a>
+|CC-BY-NC-SA-4.0| <span class="license-name">CC-BY-NC-SA-4.0</span><a href="http://spdx.org/licenses/CC-BY-NC-SA-4.0"><img src="icons/CCBYNCSA.png" ></a>
+|CC-BY-ND-4.0|<span class="license-name">CC-BY-ND-4.0</span><a href="http://spdx.org/licenses/CC-BY-ND-4.0"><img src="icons/CCBYND.png" ></a>
+|CC-BY-NC-ND-4.0| <span class="license-name">CC-BY-NC-ND-4.0</span><a href="http://spdx.org/licenses/CC-BY-NC-ND-4.0"><img src="icons/CCBYNCND.png" ></a>
