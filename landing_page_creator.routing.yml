@@ -3,9 +3,23 @@ landing_page_creator.landing_page_creator_form:
   path: '/landing_page_creator/upload'
   defaults:
     _form: '\Drupal\landing_page_creator\Form\LandingPageCreatorForm'
-    _title: 'Landing Page Creator Form'
+    _title: 'Landing Page Creator:  Upload MMD XML'
   requirements:
     _permission: 'create landing page'
+
+landing_page_creator.register_form:
+  path: '/landing_page_creator/{nodeid}/register'
+  defaults:
+    _form: '\Drupal\landing_page_creator\Form\LandingPageCreatorRegisterForm'
+    _title: 'Landing Page Creator: Register DOI'
+  requirements:
+    _permission: 'create landing page'
+  options:
+    query:
+      doi: ""
+    parameters:
+      nodeid:
+        type: Integer
 
 landing_page_creator.admin_config_form:
   path: '/admin/config/metno/datacite'

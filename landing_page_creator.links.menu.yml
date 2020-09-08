@@ -1,7 +1,7 @@
 #Define menu links here
 landing_page_creator.admin_config_form:
-  title: 'Datacite account configuration'
-  description: 'Configuration for the request of DOI'
+  title: 'Landing page creator configuration'
+  description: 'Configure Datacite account and other module specific settings'
   route_name: landing_page_creator.admin_config_form
   parent: metno.group.admin
   weight: 99

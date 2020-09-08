@@ -26,7 +26,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Drupal\serialization\Encoder\XmlEncoder;
 use XSLTProcessor;
 use SimpleXMLElement;
-use \Drupal\Core\StringTranslation\TranslatableMarkup;
+use Drupal\Core\StringTranslation\TranslatableMarkup;
 /*
  * {@inheritdoc}
  * Form class for the bokeh init form
@@ -58,15 +58,15 @@ class LandingPageCreatorForm extends FormBase {
   */
   public function buildForm(array $form, FormStateInterface $form_state) {
 
+    $config = \Drupal::config('landing_page_creator.configuration');
+    $upload_message = $config->get('message_upload');
   /**
   * Build the form
   */
   $form['creation'] = array(
     '#type' => 'markup',
     '#format' => 'html',
-    '#markup' => t('Here you create a landing page for your dataset and automatically assign a DOI using the METNO Datacite account. <br>
-                    Upload your xml, with mmd specifications according to <a href="https://github.com/steingod/mmd/blob/master/doc/mmd-specification.pdf">the METNO Metatdata Description</a>. <br><br>
-                    <span style="color:red; font-weight:bold">This is a one-step process: once you submit the form a DOI will be created and cannot be deleted.</span>'),
+    '#markup' => t($upload_message),
   );
 
   // upload the xml
@@ -495,6 +495,8 @@ class LandingPageCreatorForm extends FormBase {
 
     //$node = node_submit($node); // Prepare node for saving
     //node_save($node);
+
+    $node->setPublished(FALSE);
     $node->save();
 
   //register the url to datacite
@@ -537,7 +539,7 @@ class LandingPageCreatorForm extends FormBase {
    $message = "Created landing page: <b>" .$title .'</b>, with node id ' . $node->id() . ' created!';
    $rendered_message = \Drupal\Core\Render\Markup::create($message);
    $status_message = new TranslatableMarkup ('@message', array('@message' => $rendered_message));
-   \Drupal::messenger()->addMessage($status_message);
+   //\Drupal::messenger()->addMessage($status_message);
     //drupal_set_message( "Node with nid " . $node->nid . " saved!\n");
 
     //$form_state['redirect']  = 'node/'.$node->nid;
@@ -547,8 +549,9 @@ class LandingPageCreatorForm extends FormBase {
     $path = '/node/' . $node->id();
     $alias = \Drupal::service('path.alias_manager')->getAliasByPath($path);
 
-    $url = Url::fromUri('internal:' . $alias);
-    //$url = Url::fromRoute('entity.node.canonical', [ 'node' => $node->id()]);
+    //$url = Url::fromUri('internal:' . $alias);
+    //$url = Url::fromRoute('landing_page_creator.controller.confirm', [ 'nodeid' => $node->id(), 'doi' => $doi]);
+    $url = Url::fromRoute('landing_page_creator.register_form', [ 'nodeid' => $node->id(), 'doi' => $doi]);
 
 
     $form_state->setRedirectUrl($url);
