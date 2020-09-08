@@ -1,3 +1,4 @@
+uuid: 9e0de0b2-acb8-4955-be21-e0cead5a9aa1
 langcode: en
 status: true
 dependencies:
@@ -25,6 +26,8 @@ dependencies:
     - link
     - text
     - user
+_core:
+  default_config_hash: byJZbIfL8E3_3MzIS_jWZfYOGsEkPEw_pr-f1UFC18Y
 id: node.landing_page.teaser
 targetEntityType: node
 bundle: landing_page
@@ -33,6 +36,20 @@ content:
   field_abstract:
     type: text_default
     weight: 1
+    region: content
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+  field_citation:
+    type: text_default
+    weight: 2
+    region: content
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+  field_contact:
+    type: text_default
+    weight: 3
     region: content
     label: above
     settings: {  }
@@ -53,13 +70,12 @@ hidden:
   body: true
   field_access: true
   field_bnds: true
-  field_citation: true
-  field_contact: true
   field_east: true
   field_end_date: true
   field_iso_topic_category: true
   field_license: true
   field_meta_tags: true
+  field_metatag: true
   field_north: true
   field_south: true
   field_start_date: true
