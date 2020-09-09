@@ -1,13 +1,13 @@
 ## Module: Landing Page Creator (landing_page_creator)
 
 Authors: Lara Ferrighi, laraf@met.no
-         Magnar Eivind Martinsen, magnarem@met.no 
+         Magnar Eivind Martinsen, magnarem@met.no
 
 
 
-### Description: 
-A Drupal module to create landing pages associated with DOIs requests. 
-The workflow is the following: 
+### Description:
+A Drupal module to create landing pages associated with DOIs requests.
+The workflow is the following:
 - the form page is available at "yoursite/landing-page-creator/form"
 - upload an xml file with mmd specifications
 - the mmd fields are translated into Datacite metadata format using https://github.com/steingod/mmd/blob/master/xslt/mmd-to-datacite.xsl which is included in the module under the includes directory
@@ -17,10 +17,14 @@ The workflow is the following:
 - URL of the landing page is registered to Datacite using drupal_http_request
 
 ### Permission:
-To configure the permissions for this module, i.e. who can access the "landing-page-creator/form" page go to: "People->Permissions" and activate the "Access content for the Landing Page module" for the role of interest.
+To configure the permissions for this module, i.e. who can access the "landing-page-creator/form" page go to: "People->Permissions" and activate the "create landing page" permission for the Landing Page module, for the role of interest.
 
 ### Drupal 8 specific information:
-The module should be placed in <web_root>/modules/metno for it to work properly
+- The module should be placed in **<web_root>/modules/metno** for it to work properly
+- The module will create the required content type and other required entities on install, no manual creation should be needed.
+- To disable DOI registration, please check the debug option in the configuration page of the module.
+- Some default messages to the user can be configured in the configuration page of the module.
+
 ### Requirements
 
 This module requires installation and/or configuration of external services as well as the creation of a specific content type . More specifically:   
@@ -36,7 +40,7 @@ depending on the evironment selected (test in the first case, operational in the
 
 #### Content type
 
-A content type (CT) must be set up in the Drupal site. 
+A content type (CT) must be set up in the Drupal site.
 - the manchine name of the CT: landing_page
 
 - the fields of the content type must be as follow:
@@ -67,8 +71,8 @@ A content type (CT) must be set up in the Drupal site.
 - machine name: field_iso_topic_category
 - number of values: unlimited
 
-| key | values 
-| --- | --- 
+| key | values
+| --- | ---
 |farming| farming
 |biota|biota
 |boundaries|boundaries
@@ -87,15 +91,15 @@ A content type (CT) must be set up in the Drupal site.
 |society|society
 |structure|structure
 |transportation|transportation
-|utilitiesCommunication|utilitiesCommunication 
+|utilitiesCommunication|utilitiesCommunication
 
-##### License 
+##### License
 
 - machine name: field_license
 - number of values: 1
 
-| key | values 
-| --- | --- 
+| key | values
+| --- | ---
 |CC0-1.0|<span class="license-name">CC0-1.0</span><a href="http://spdx.org/licenses/CC0-1.0 "><img src="icons/CC0.png" ></a>
 |CC-BY-4.0|<span class="license-name">CC-BY-4.0</span><a href="http://spdx.org/licenses/CC-BY-4.0"><img src="icons/CCBY.png" ></a>
 |CC-BY-SA-4.0|<span class="license-name">CC-BY-SA-4.0</span><a href="http://spdx.org/licenses/CC-BY-SA-4.0"><img src="icons/CCBYSA.png" ></a>
