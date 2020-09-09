@@ -49,25 +49,38 @@ class LandingPageCreatorRegisterForm extends FormBase {
   *
   * {@inheritdoc}
   */
-  public function buildForm(array $form, FormStateInterface $form_state, $nodeid = NULL, Request $request = NULL) {
+//public function buildForm(array $form, FormStateInterface $form_state, $nodeid = NULL, Request $request = NULL) {
+  public function buildForm(array $form, FormStateInterface $form_state, Request $request = NULL) {
     $config = \Drupal::config('landing_page_creator.configuration');
     $register_message = $config->get('message_register');
+    $debug_message = $config->get('message_debug');
     $view_mode_config = $config->get('view_mode');
 
     $doi = $request->query->all()['doi'];
-    $nid = $nodeid;
+    //$nid = $nodeid;
 
     //
-
+    $tempstore = \Drupal::service('tempstore.private')->get('landing_page_creator');
+    $node = $tempstore->get('node');
+    //dpm($node);
     $entity_type = 'node';
     $view_mode = $view_mode_config; //from configuratorn
 
-    $view_builder = \Drupal::entityTypeManager()->getViewBuilder($entity_type);
-    $storage = \Drupal::entityTypeManager()->getStorage($entity_type);
-    $node = $storage->load($nid);
+     $view_builder = \Drupal::entityTypeManager()->getViewBuilder($entity_type);
+    //$storage = \Drupal::entityTypeManager()->getStorage($entity_type);
+    //$node = $storage->load($nid);
     //$node = \Drupal\node\Entity\Node::load($nodeid);
     $build = $view_builder->view($node, $view_mode);
     $output = render($build);
+    //Dispaly debug warning
+    if($config->get('debug')) {
+    
+      $form['debug'] = array(
+        '#type' => 'markup',
+        '#format' => 'html',
+        '#markup' => $this->t($debug_message),
+      );
+    }
   /**
   * Build the form
   */
@@ -107,10 +120,10 @@ class LandingPageCreatorRegisterForm extends FormBase {
     '#value' => $doi,
   ];
 
-  $form['nodeid'] = [
-    '#type' => 'hidden',
-    '#value' => $nodeid,
-  ];
+//  $form['nodeid'] = [
+//    '#type' => 'hidden',
+//    '#value' => $nodeid,
+//  ];
 
   return $form;
   }
@@ -145,11 +158,13 @@ class LandingPageCreatorRegisterForm extends FormBase {
      $datacite_prefix = $config->get('prefix_datacite');
      $datacite_url = $config->get('url_datacite');
 
+     $tempstore = \Drupal::service('tempstore.private')->get('landing_page_creator');
+     $node = $tempstore->get('node');
      //Set the current landing page to published and save
-     $entity_type = 'node';
-     $nid = $form_state->getValue('nodeid');
-     $storage = \Drupal::entityTypeManager()->getStorage($entity_type);
-     $node = $storage->load($nid);
+     //$entity_type = 'node';
+     //$nid = $form_state->getValue('nodeid');
+     //$storage = \Drupal::entityTypeManager()->getStorage($entity_type);
+     //$node = $storage->load($nid);
 
      $node->setPublished(TRUE);
 
@@ -177,6 +192,8 @@ class LandingPageCreatorRegisterForm extends FormBase {
   * TODO: Register web call commentet out for now due to testing...Will need to remove
   * comments and switch $message statement when going in prod
   */
+    if(!$config->get('debug')) {
+      \Drupal::logger('landing_page_creator')->debug('Register the DOI: ' . $doi);
      try {
       //$client = \Drupal::httpClient();
       $result_reg = $client->put($url, $options);
@@ -188,53 +205,62 @@ class LandingPageCreatorRegisterForm extends FormBase {
    }
     //dpm($result_reg);
     $status = $result_reg->getStatusCode();
-    //$status = 201;
+  }
+  else {
+    \Drupal::logger('landing_page_creator')->debug('Module is in debug mode. DOI registration skipped');
+    \Drupal::messenger()->addMessage('Module is in debug mode. DOI registration skipped', 'warning');
+    $status = 201;
+  }
     //$result = $request->getBody();
     // $result_reg = drupal_http_request('https://mds.'.$datacite_url.'datacite.org/doi/'.$doi, $options_url);
     //$message = "Created landing page: <b>" .$title .'</b>, with node id ' . $node->id() . ' '. $result_reg->getReasonPhrase() .'!';
-    $message = "Created landing page: <b>" . $node->getTitle() .'</b>, with node id ' . $node->id() . ' and registered DOI url: <strong>' . $url . '</strong>';
-    $rendered_message = \Drupal\Core\Render\Markup::create($message);
-    $status_message = new TranslatableMarkup ('@message', array('@message' => $rendered_message));
+
      //drupal_set_message( "Node with nid " . $node->nid . " saved!\n");
 
 
      //$url = \Drupal::url($routeName, $routeParameters);
-     $path = '/node/' . $node->id();
-     $alias = \Drupal::service('path.alias_manager')->getAliasByPath($path);
 
-     $url = Url::fromUri('internal:' . $alias);
      //$url = Url::fromRoute('landing_page_creator.controller.confirm', [ 'nodeid' => $node->id(), 'doi' => $doi]);
      //$url = Url::fromRoute('landing_page_creator.register_form', [ 'nodeid' => $node->id(), 'doi' => $doi]);
      if($status != 201 )  {
        \Drupal::messenger()->addError('Something went wrong during DOI registration. Landing page not created! Please contact administrator');
        $url = Url::fromRoute('landing_page_creator.landing_page_creator_form');
-       $node->delete();
+       //$node->delete();
+       $tempstore->delete('node');
        $form_state->setRedirectUrl($url);
      }
      else {
-     //Save the node and print message
-     $node->save();
-     \Drupal::messenger()->addMessage($status_message);
-     $form_state->setRedirectUrl($url);
+       //Save the node and print message
+       $node->save();
+       $message = "Created landing page: <b>" . $node->getTitle() .'</b>, with node id ' . $node->id() . ' and registered DOI url: <strong>' . $url . '</strong>';
+       $rendered_message = \Drupal\Core\Render\Markup::create($message);
+       $status_message = new TranslatableMarkup ('@message', array('@message' => $rendered_message));
+       $path = '/node/' . $node->id();
+       $alias = \Drupal::service('path.alias_manager')->getAliasByPath($path);
+       $url = Url::fromUri('internal:' . $alias);
+       $tempstore->delete('node');
+       \Drupal::messenger()->addMessage($status_message);
+       $form_state->setRedirectUrl($url);
    }
   }
 
   public function discardLandingPage(array &$form, FormStateInterface $form_state) {
-      \Drupal::logger('landing_page_creator')->debug('Executing discardLandingPage ajax callback');
+      \Drupal::logger('landing_page_creator')->debug('Executing discardLandingPage');
     //$response = new AjaxResponse();
-
+    $tempstore = \Drupal::service('tempstore.private')->get('landing_page_creator');
+    $tempstore->delete('node');
     // Delete the node
     //Set the current landing page to published and save
-    $nid = $form_state->getValue('nodeid');
+    //$nid = $form_state->getValue('nodeid');
     $entity_type = 'node';
-    $storage = \Drupal::entityTypeManager()->getStorage($entity_type);
-    $node = $storage->load($nid);
-    $node->delete();
+    //$storage = \Drupal::entityTypeManager()->getStorage($entity_type);
+    //$node = $storage->load($nid);
+    //$node->delete();
 
     $url = Url::fromRoute('landing_page_creator.landing_page_creator_form');
     //$command = new RedirectCommand($url->toString());
     //$response->addCommand($command);
-    \Drupal::messenger()->addMessage('Landing page with node id: '.$nid .' discarded. Please upload another dataset', 'warning');
+    \Drupal::messenger()->addMessage('Landing page discarded. Please upload another dataset', 'warning');
     $form_state->setRedirectUrl($url);
     //return $response;
   }

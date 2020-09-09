@@ -85,6 +85,16 @@ class LandingPageCreatorConfigurationForm extends ConfigFormBase {
       '#default_value' => $config->get('url_datacite'),
     );
 
+$form['register'] = [
+  '#type' => 'fieldset',
+  '#title' => 'Provides the posibility to disable DOI registration for debugging purposes',
+  '#tree' => TRUE,
+];
+$form['register']['debug'] = [
+  '#type' => 'checkbox',
+  '#title' => 'Check this to disable DOI Registration',
+  '#default_value' => $config->get('debug'),
+];
 
 // Choose view_mode for display landing page draft
 $form['draft'] = [
@@ -121,6 +131,12 @@ $form['draft']['view_mode'] = array(
       '#default_value' => $config->get('message_register'),
     ];
 
+    $form['messages']['debug'] = [
+      '#type' => 'textarea',
+      '#title' => 'Enter DEBUG  message here',
+      '#default_value' => $config->get('message_debug'),
+    ];
+
     $form['#attached']['library'][] = 'landing_page_creator/landing_page_creator';
     return parent::buildForm($form, $form_state);
  }
@@ -142,11 +158,11 @@ $form['draft']['view_mode'] = array(
 			     Configure your Datacite credentials in the configuration interface. <br>
 				Username missing'));
     }
-    if (!isset($datacite_pass) || $datacite_pass == ''){
+  /*  if (!isset($datacite_pass) || $datacite_pass == ''){
        $form_state->setErrorByName('landing_page_creator', t('You are connecting to DataCite to obtain a DOI. <br>
 			     Configure your Datacite credentials in the configuration interface. <br>
 				Password missing'));
-    }
+    } */
     if (!isset($datacite_prefix) || $datacite_prefix == ''){
        $form_state->setErrorByName('landing_page_creator', t('You are connecting to DataCite to obtain a DOI. <br>
 			     Configure your Datacite credentials in the configuration interface. <br>
@@ -164,14 +180,21 @@ $form['draft']['view_mode'] = array(
      * Save the configuration
     */
     $values = $form_state->getValues();
+    // Check if the password field have changed
+    if($values['datacite']['pass_datacite'] != "" ||  $values['datacite']['pass_datacite'] != NULL) {
+      $this->configFactory->getEditable('landing_page_creator.configuration')
+      ->set('pass_datacite', $values['datacite']['pass_datacite'])
+      ->save();
+    }
     $this->configFactory->getEditable('landing_page_creator.configuration')
       ->set('username_datacite', $values['datacite']['username_datacite'])
-      ->set('pass_datacite', $values['datacite']['pass_datacite'])
       ->set('prefix_datacite', $values['datacite']['prefix_datacite'])
       ->set('url_datacite', $values['datacite']['url_datacite'])
       ->set('message_upload',  $values['messages']['upload_message'])
       ->set('message_register',  $values['messages']['register_message'])
+      ->set('message_debug',  $values['messages']['debug'])
       ->set('view_mode',  $values['draft']['view_mode'])
+      ->set('debug',  $values['register']['debug'])
       ->save();
     parent::submitForm($form, $form_state);
   }

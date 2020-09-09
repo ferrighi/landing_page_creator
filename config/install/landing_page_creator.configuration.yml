@@ -5,3 +5,5 @@ url_datacite: test.
 message_upload: "Here you create a landing page for your dataset and automatically assign a DOI using the METNO Datacite account. <br>\r\nUpload your xml, with mmd specifications according to <a href=\"https://github.com/steingod/mmd/blob/master/doc/mmd-specification.pdf\">the METNO Metatdata Description</a>. <br>"
 message_register: "<h3> Got DOI <span style=\"color:blue; font-weight:bold\"> @doi </span> from Datacite</h3><p> \r\nPlease review metadata on the landing page draft below. Press <span style=\"color:green; font-weight:bold\">Register</span> to register DOI, or <span style=\"color:red; font-weight:bold\">Discard</span> to abort.</p>"
 view_mode: teaser
+debug: 0
+message_debug: "<p><span style=\"color:red; font-weight:bold\">Warning!! Module is in debug mode. DOIs will not be registered.\r\nTo disable debug mode please go to the configuration page for the landing page crator module and uncheck the debug option.</span></p>"

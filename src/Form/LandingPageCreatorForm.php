@@ -14,6 +14,7 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Link;
 use Drupal\Core\Url;
 use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Client;
@@ -60,9 +61,18 @@ class LandingPageCreatorForm extends FormBase {
 
     $config = \Drupal::config('landing_page_creator.configuration');
     $upload_message = $config->get('message_upload');
+    $debug_message = $config->get('message_debug');
   /**
   * Build the form
   */
+if($config->get('debug')) {
+  $form['debug'] = array(
+    '#type' => 'markup',
+    '#format' => 'html',
+    '#markup' => $this->t($debug_message),
+  );
+}
+
   $form['creation'] = array(
     '#type' => 'markup',
     '#format' => 'html',
@@ -176,6 +186,18 @@ class LandingPageCreatorForm extends FormBase {
     catch (RequestException $e){
       // Log the error.
       watchdog_exception('landing_page_creator', $e);
+      \Drupal::messenger()->addError(t('Datacite request has failed. Please check log messages and/or contact administrator'));
+      $url = Url::fromRoute('landing_page_creator.landing_page_creator_form');
+      //$form_state->setRedirectUrl($url);
+      return new RedirectResponse($url->toString());
+    }
+    catch (ClientException $e){
+      // Log the error.
+      watchdog_exception('landing_page_creator', $e);
+      \Drupal::messenger()->addError(t('Datacite request has failed. Please check log messages and/or contact administrator'));
+      $url = Url::fromRoute('landing_page_creator.landing_page_creator_form');
+      //$form_state->setRedirectUrl($url);
+      return new RedirectResponse($url->toString());
     }
 
     $status =  $response->getStatusCode();
@@ -497,7 +519,7 @@ class LandingPageCreatorForm extends FormBase {
     //node_save($node);
 
     $node->setPublished(FALSE);
-    $node->save();
+    //$node->save();
 
   //register the url to datacite
   //curl -H "Content-Type:text/plain;charset=UTF-8" -X PUT --user username:password -d "$(printf 'doi=10.5438/JQX3-61AT\nurl=http://example.org/')" https://mds.test.datacite.org/doi/10.5438/JQX3-61AT
@@ -551,9 +573,12 @@ class LandingPageCreatorForm extends FormBase {
 
     //$url = Url::fromUri('internal:' . $alias);
     //$url = Url::fromRoute('landing_page_creator.controller.confirm', [ 'nodeid' => $node->id(), 'doi' => $doi]);
-    $url = Url::fromRoute('landing_page_creator.register_form', [ 'nodeid' => $node->id(), 'doi' => $doi]);
+    //$url = Url::fromRoute('landing_page_creator.register_form', [ 'nodeid' => $node->id(), 'doi' => $doi]);
+    $url = Url::fromRoute('landing_page_creator.register_form', [ 'doi' => $doi]);
 
-
+    // Save the node object in private tempstore to send it to the next field form
+    $tempstore = \Drupal::service('tempstore.private')->get('landing_page_creator');
+    $tempstore->set('node', $node);
     $form_state->setRedirectUrl($url);
 
  }

@@ -8,7 +8,8 @@ landing_page_creator.landing_page_creator_form:
     _permission: 'create landing page'
 
 landing_page_creator.register_form:
-  path: '/landing_page_creator/{nodeid}/register'
+#  path: '/landing_page_creator/{nodeid}/register'
+  path: '/landing_page_creator/register'
   defaults:
     _form: '\Drupal\landing_page_creator\Form\LandingPageCreatorRegisterForm'
     _title: 'Landing Page Creator: Register DOI'
@@ -17,9 +18,9 @@ landing_page_creator.register_form:
   options:
     query:
       doi: ""
-    parameters:
-      nodeid:
-        type: Integer
+#    parameters:
+#      nodeid:
+#        type: Integer
 
 landing_page_creator.admin_config_form:
   path: '/admin/config/metno/datacite'
