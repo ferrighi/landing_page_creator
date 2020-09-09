@@ -37,7 +37,7 @@ depending on the evironment selected (test in the first case, operational in the
 * A Landing Page content type must be set up in the portal that is using this module. See below for the configuration of this content type.
 
 ### Configuration of the Landing Page content type
-
+**Note:** *This is not required for the Drupal 8 version of the module*
 #### Content type
 
 A content type (CT) must be set up in the Drupal site.
