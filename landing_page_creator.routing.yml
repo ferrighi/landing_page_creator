@@ -15,9 +15,9 @@ landing_page_creator.register_form:
     _title: 'Landing Page Creator: Register DOI'
   requirements:
     _permission: 'create landing page'
-  options:
-    query:
-      doi: ""
+#  options:
+#    query:
+#      doi: ""
 #    parameters:
 #      nodeid:
 #        type: Integer

@@ -131,6 +131,7 @@ if($config->get('debug')) {
     /*
      * Submit the form and do some actions
      */
+     $tempstore = \Drupal::service('tempstore.private')->get('landing_page_creator');
      $user = \Drupal::currentUser();
      global $base_url;
      global $base_path;
@@ -146,14 +147,9 @@ if($config->get('debug')) {
      // should the repository included in this module?
      $furi_rp = \Drupal::service('file_system')->realpath($furi);
      exec('xsltproc '.drupal_get_path('module', 'landing_page_creator').'/includes/mmd-to-datacite.xsl '.$furi_rp.' 2>&1', $datacite_metadata, $status); //requires xsl file from repo
-     //$xml_file = file_get_contents($furi_rp);
-     //$xslt_file = file_get_contents(drupal_get_path('module', 'landing_page_creator').'/includes/mmd-to-datacite.xsl');
-     //$xslt = new XSLTProcessor();
-     //$xslt->importStylesheet(new SimpleXMLElement($xslt_file));
-     //$parent = XmlEncoder::encode($xml_file, 'xml', 'mmd');
-     //$datacite_metadata = $xslt->transformToXml(new SimpleXMLElement($parent));
-
-     // Get the stored datacite config
+     /**
+      * TODO: Add validation of the DataCite XML against DataCite XML schema
+      */
      $config = \Drupal::config('landing_page_creator.configuration');
 
      $datacite_user = $config->get('username_datacite');
@@ -165,56 +161,9 @@ if($config->get('debug')) {
      //curl -H "Content-Type: application/xml;charset=UTF-8" -X POST -i --user username:password -d @$datacite_metadata.xml https://mds.test.datacite.org/metadata
 
      $xml = implode(" ",$datacite_metadata);
-     $options = [
-      'timeout' => 30,
-      'debug' => false,
-      'body' => $xml,
-      'auth' => [$datacite_user, $datacite_pass],
-      'headers' => array(
-        'Accept' => 'application/xml',
-        'Content-Type' => 'application/xml;charset=UTF-8',
-      )];
+     $tempstore->set('datacite_xml', $xml);
 
-     $result = NULL;
-     $url = 'https://mds.'. $datacite_url .'datacite.org/metadata/'. $datacite_prefix;
-     $client = new Client();
-     $response = NULL;
-     try {
-      $response = $client->post($url, $options);
-
-    }
-    catch (RequestException $e){
-      // Log the error.
-      watchdog_exception('landing_page_creator', $e);
-      \Drupal::messenger()->addError(t('Datacite request has failed. Please check log messages and/or contact administrator'));
-      $url = Url::fromRoute('landing_page_creator.landing_page_creator_form');
-      //$form_state->setRedirectUrl($url);
-      return new RedirectResponse($url->toString());
-    }
-    catch (ClientException $e){
-      // Log the error.
-      watchdog_exception('landing_page_creator', $e);
-      \Drupal::messenger()->addError(t('Datacite request has failed. Please check log messages and/or contact administrator'));
-      $url = Url::fromRoute('landing_page_creator.landing_page_creator_form');
-      //$form_state->setRedirectUrl($url);
-      return new RedirectResponse($url->toString());
-    }
-
-    $status =  $response->getStatusCode();
-
-//     $result = drupal_http_request('https://mds.'.$datacite_url.'datacite.org/metadata/'.$datacite_prefix, $options_md);
-     //extract DOI from  http response
-    if ($response != NULL && $status == 201) {
-        $doi = explode("metadata/", $response->getHeader('Location')[0])[1];
-
-        if ($datacite_url == 'test.') {
-           $doi_uri = 'https://handle.test.datacite.org/'.$doi; //test env.
-        }else{
-           $doi_uri = 'https://doi.org/'.$doi; // operational env.
-        }
-     }else{
-        \Drupal::messenger()->addError(t('Datacite request has failed'));
-     }
+    //Here was the old datacite call
 
     $xml_content = file_get_contents($furi); // this is a string from gettype
 
@@ -388,10 +337,10 @@ if($config->get('debug')) {
      'status' => 1,
      'promote' => 0,
      'comment' => 0,
-     'path' => [
-       'alias' => '/datasets/' . $doi,
-       'pathauto' => PathautoState::SKIP,
-],
+//     'path' => [
+//       'alias' => '/datasets/' . $doi,
+//       'pathauto' => PathautoState::SKIP,
+//],
    ]);
 
     // Fill in the landing page node with content extracted from mmd and datacite response
@@ -431,7 +380,7 @@ if($config->get('debug')) {
 
     // DOI
     //$node->field_doi[$node->language][]['url'] = $doi_uri;
-    $node->set('field_doi', $doi_uri);
+    //$node->set('field_doi', $doi_uri);
     // License
     //if ($license == 'Public Domain') {
     //   $lic_key = 'CC0';
@@ -521,63 +470,12 @@ if($config->get('debug')) {
     $node->setPublished(FALSE);
     //$node->save();
 
-  //register the url to datacite
-  //curl -H "Content-Type:text/plain;charset=UTF-8" -X PUT --user username:password -d "$(printf 'doi=10.5438/JQX3-61AT\nurl=http://example.org/')" https://mds.test.datacite.org/doi/10.5438/JQX3-61AT
 
-
-    $body_content = 'doi='.$doi."\nurl=".$base_url.\Drupal::service('path.alias_manager')->getAliasByPath('/datasets/' . $doi);
-    //dpm($body_content);
-    $options = [
-     'connect_timeout' => 30,
-     'debug' => false,
-     'auth' => [$datacite_user, $datacite_pass],
-     'body' => $body_content,
-     'headers' => array(
-       'Content-Type' => 'text/plain;charset=UTF-8',
-     )];
-    //$client = \Drupal::httpClient();
-    $result_reg = NULL;
-    $client = new Client();
-    $url = 'https://mds.'.$datacite_url.'datacite.org/doi/' .$doi;
-
-/**
- * TODO: Register web call commentet out for now due to testing...Will need to remove
- * comments and switch $message statement when going in prod
- */
-//    try {
-//     //$client = \Drupal::httpClient();
-//     $result_reg = $client->put($url, $options);
-//
-//   }
-//   catch (RequestException $e){
-//     // Log the error.
-//     watchdog_exception('landing_page_creator', $e);
-//   }
-   //dpm($result_reg);
-   //dpm($result_reg->getStatusCode());
-   //$result = $request->getBody();
-   // $result_reg = drupal_http_request('https://mds.'.$datacite_url.'datacite.org/doi/'.$doi, $options_url);
-   //$message = "Created landing page: <b>" .$title .'</b>, with node id ' . $node->id() . ' '. $result_reg->getReasonPhrase() .'!';
-   $message = "Created landing page: <b>" .$title .'</b>, with node id ' . $node->id() . ' created!';
-   $rendered_message = \Drupal\Core\Render\Markup::create($message);
-   $status_message = new TranslatableMarkup ('@message', array('@message' => $rendered_message));
-   //\Drupal::messenger()->addMessage($status_message);
-    //drupal_set_message( "Node with nid " . $node->nid . " saved!\n");
-
-    //$form_state['redirect']  = 'node/'.$node->nid;
-    $routeName = 'entity.node.canonical';
-    $routeParameters = ['node' => $node->id()];
-    //$url = \Drupal::url($routeName, $routeParameters);
-    $path = '/node/' . $node->id();
-    $alias = \Drupal::service('path.alias_manager')->getAliasByPath($path);
-
-    //$url = Url::fromUri('internal:' . $alias);
-    //$url = Url::fromRoute('landing_page_creator.controller.confirm', [ 'nodeid' => $node->id(), 'doi' => $doi]);
-    //$url = Url::fromRoute('landing_page_creator.register_form', [ 'nodeid' => $node->id(), 'doi' => $doi]);
-    $url = Url::fromRoute('landing_page_creator.register_form', [ 'doi' => $doi]);
+    //$url = Url::fromRoute('landing_page_creator.register_form', [ 'doi' => $doi]);
+    $url = Url::fromRoute('landing_page_creator.register_form');
 
     // Save the node object in private tempstore to send it to the next field form
-    $tempstore = \Drupal::service('tempstore.private')->get('landing_page_creator');
+
     $tempstore->set('node', $node);
     $form_state->setRedirectUrl($url);
 
