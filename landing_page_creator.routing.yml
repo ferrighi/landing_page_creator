@@ -22,6 +22,14 @@ landing_page_creator.register_form:
 #      nodeid:
 #        type: Integer
 
+landing_page_creator.main:
+  path: '#'
+  defaults:
+#    _form: '\Drupal\landing_page_creator\Form\LandingPageCreatorRegisterForm'
+    _title: 'Landing Page'
+  requirements:
+    _permission: 'create landing page'
+
 landing_page_creator.admin_config_form:
   path: '/admin/config/metno/datacite'
   defaults:

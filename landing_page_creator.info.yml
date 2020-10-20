@@ -16,5 +16,17 @@ dependencies:
   token: 'drupal:token'
   ctools: 'drupal:ctools'
   0: menu_ui
+  1: node
+  2: user
+  3: geofield
+  4: leaflet_views
+  5: link
 library_dependencies:
   - ext-SimpleXML
+  - leaflet
+  - leaflet_markercluster
+  - geofield
+  - leaflet_views
+  - leaflet_geojson
+  - geolocation_leaflet
+  - geolocation

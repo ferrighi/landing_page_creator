@@ -10,8 +10,15 @@ landing_page_creator.landing_page_creator_form:
   title: 'Landing Page Creator'
   description: 'Page to submit DOIs request'
   route_name: landing_page_creator.landing_page_creator_form
+  parent: landing_page_creator.main
   menu_name: main
   weight: 0
+
+landing_page_creator.main:
+  title: 'Landing Page'
+  route_name: landing_page_creator.main
+  description: "Upload MMD and create Landing Page"
+  menu_name: main
 
 metno.group.admin:
   title: 'METNO'
