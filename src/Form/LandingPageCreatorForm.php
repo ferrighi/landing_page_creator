@@ -454,10 +454,14 @@ if($config->get('debug')) {
                                                                         <strong>Resource: </strong><a href='.$dar_list[$cn].'>'.$dar_list[$cn].'</a>',
                                                         'format' => 'full_html',
                                                       ); */
-    $node->set('field_access', array('value' => $hr.'<p><strong>Type: </strong>'.$dat_list[$cn].'</p>
-                              <p><strong>Resource: </strong><a href='.$dar_list[$cn].'>'.$dar_list[$cn].'</a></p>',
+
+    /* Add .html string to OPeNDAP url */
+    if($dat_list[$cn] === 'OPeNDAP') {
+      $node->set('field_access', array('value' => $hr.'<p><strong>Type: </strong>'.$dat_list[$cn].'</p>
+                              <p><strong>Resource: </strong><a href="'.$dar_list[$cn].'".html>'.$dar_list[$cn].'</a></p>',
                               'format' => 'full_html',
                             ));
+                          }
       $hr = '<hr>';
 
     }

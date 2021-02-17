@@ -23,7 +23,6 @@ First attempt for MMD to DataCite conversion...
 
                 <xsl:element name="alternateIdentifiers">
                    <xsl:apply-templates select="mmd:metadata_identifier" />
-                   <!--xsl:apply-templates select="mmd:alternate_identifier" /-->
                 </xsl:element>
                 <!--xsl:apply-templates select="mmd:personnel[mmd:role='Investigator']" /-->
                 <!-- not implemented yet
@@ -61,15 +60,6 @@ First attempt for MMD to DataCite conversion...
                     <!--this is free text. METNO UUID is just a suggestion-->
                     <xsl:attribute name="alternateIdentifierType">METNO UUID</xsl:attribute>
                         <xsl:value-of select="." />
-                </xsl:element>
-        </xsl:template>
-
-	<xsl:template match="mmd:alternate_identifier">
-                <xsl:element name="alternateIdentifier">
-                    <xsl:attribute name="alternateIdentifierType">
-			    <xsl:value-of select="@type" />
-		    </xsl:attribute>
-		    <xsl:value-of select="." />
                 </xsl:element>
         </xsl:template>
 
@@ -181,18 +171,17 @@ First attempt for MMD to DataCite conversion...
 		</xsl:element>
 	</xsl:template-->
 
-
-	<xsl:template match="mmd:use_constraint">
-		<xsl:element name="rightsList">
+        <xsl:template match="mmd:use_constraint">
+                <xsl:element name="rightsList">
                     <xsl:element name="rights">
                         <xsl:attribute name="rightsURI"><xsl:value-of select="mmd:resource" /></xsl:attribute>
                         <xsl:attribute name="rightsIdentifier"><xsl:value-of select="mmd:identifier" /></xsl:attribute>
                         <xsl:attribute name="schemeURI">https://spdx.org/licenses/</xsl:attribute>
                         <xsl:attribute name="rightsIdentifierScheme">SPDX</xsl:attribute>
-			<xsl:value-of select="mmd:identifier" />
+                        <xsl:value-of select="mmd:identifier" />
                     </xsl:element>
-		</xsl:element>
-	</xsl:template>
+                </xsl:element>
+        </xsl:template>
 
 	<xsl:template match="mmd:dataset_language">
 		<xsl:element name="language">
@@ -235,9 +224,6 @@ First attempt for MMD to DataCite conversion...
             <xsl:element name="dif:Dataset_Editor">
                 <xsl:value-of select="mmd:dataset_editor" />
             </xsl:element>
-            <xsl:element name="dif:Dataset_Title">
-                <xsl:value-of select="mmd:dataset_title" />
-            </xsl:element>
             <xsl:element name="dif:Dataset_Series_Name">
                 <xsl:value-of select="mmd:dataset_series_name" />
             </xsl:element>
@@ -264,18 +250,18 @@ First attempt for MMD to DataCite conversion...
         <xsl:element name="creator">
         <xsl:element name="creatorName">
         <!--xsl:attribute name="nameType">Personal</xsl:attribute-->
-            <xsl:value-of select="normalize-space(substring-before($author, ','))"/>
+            <xsl:value-of select="substring-before($author, ',')"/>
         </xsl:element>
         </xsl:element>
         <xsl:call-template name="tokenize">
-            <xsl:with-param name="author" select="normalize-space(substring-after($author, ','))"/>
+            <xsl:with-param name="author" select="substring-after($author, ',')"/>
         </xsl:call-template>
         </xsl:when>
         <xsl:otherwise>
         <xsl:element name="creator">
         <xsl:element name="creatorName">
         <!--xsl:attribute name="nameType">Personal</xsl:attribute-->
-            <xsl:value-of select="normalize-space($author)"/>
+            <xsl:value-of select="$author"/>
         </xsl:element>
         </xsl:element>
         </xsl:otherwise>
