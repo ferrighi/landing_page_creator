@@ -1,0 +1,89 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.teaser
+    - field.field.node.landing_page.body
+    - field.field.node.landing_page.field_abstract
+    - field.field.node.landing_page.field_access
+    - field.field.node.landing_page.field_bnds
+    - field.field.node.landing_page.field_citation
+    - field.field.node.landing_page.field_contact
+    - field.field.node.landing_page.field_doi
+    - field.field.node.landing_page.field_east
+    - field.field.node.landing_page.field_end_date
+    - field.field.node.landing_page.field_haspart
+    - field.field.node.landing_page.field_iso_topic_category
+    - field.field.node.landing_page.field_license
+    - field.field.node.landing_page.field_metatag
+    - field.field.node.landing_page.field_north
+    - field.field.node.landing_page.field_related_info
+    - field.field.node.landing_page.field_south
+    - field.field.node.landing_page.field_start_date
+    - field.field.node.landing_page.field_tags
+    - field.field.node.landing_page.field_west
+    - node.type.landing_page
+  module:
+    - link
+    - options
+    - text
+    - user
+id: node.landing_page.teaser
+targetEntityType: node
+bundle: landing_page
+mode: teaser
+content:
+  field_abstract:
+    type: text_summary_or_trimmed
+    weight: 1
+    region: content
+    label: above
+    settings:
+      trim_length: 256
+    third_party_settings: {  }
+  field_citation:
+    type: text_default
+    weight: 2
+    region: content
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+  field_doi:
+    type: link
+    weight: 0
+    region: content
+    label: inline
+    settings:
+      trim_length: 80
+      url_only: false
+      url_plain: false
+      rel: ''
+      target: ''
+    third_party_settings: {  }
+  field_license:
+    type: list_default
+    weight: 3
+    region: content
+    label: inline
+    settings: {  }
+    third_party_settings: {  }
+hidden:
+  body: true
+  field_access: true
+  field_bnds: true
+  field_contact: true
+  field_east: true
+  field_end_date: true
+  field_haspart: true
+  field_iso_topic_category: true
+  field_meta_tags: true
+  field_metatag: true
+  field_north: true
+  field_related_info: true
+  field_south: true
+  field_start_date: true
+  field_tags: true
+  field_west: true
+  langcode: true
+  links: true
+  search_api_excerpt: true

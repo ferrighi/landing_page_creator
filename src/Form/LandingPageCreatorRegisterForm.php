@@ -233,7 +233,7 @@ class LandingPageCreatorRegisterForm extends FormBase {
    //curl -H "Content-Type:text/plain;charset=UTF-8" -X PUT --user username:password -d "$(printf 'doi=10.5438/JQX3-61AT\nurl=http://example.org/')" https://mds.test.datacite.org/doi/10.5438/JQX3-61AT
 
     //$doi = $form_state->getValue('doi');
-     $body_content = 'doi='.$doi."\nurl=".$base_url.\Drupal::service('path.alias_manager')->getAliasByPath('/datasets/' . $doi);
+     $body_content = 'doi='.$doi."\nurl=".$base_url.\Drupal::service('path_alias.manager')->getAliasByPath('/datasets/' . $doi);
      //dpm($body_content);
      $options = [
       'connect_timeout' => 30,
@@ -328,7 +328,7 @@ class LandingPageCreatorRegisterForm extends FormBase {
        $rendered_message = \Drupal\Core\Render\Markup::create($message);
        $status_message = new TranslatableMarkup ('@message', array('@message' => $rendered_message));
        $path = '/node/' . $node->id();
-       $alias = \Drupal::service('path.alias_manager')->getAliasByPath($path);
+       $alias = \Drupal::service('path_alias.manager')->getAliasByPath($path);
        $url = Url::fromUri('internal:' . $alias);
        $tempstore->delete('node');
        $tempstore->delete('datacite_xml');

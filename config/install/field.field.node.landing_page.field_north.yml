@@ -1,0 +1,22 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_north
+    - node.type.landing_page
+id: node.landing_page.field_north
+field_name: field_north
+entity_type: node
+bundle: landing_page
+label: north
+description: 'Temporal extent coordinates, north'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  min: null
+  max: null
+  prefix: ''
+  suffix: ''
+field_type: float
