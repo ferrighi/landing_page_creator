@@ -1,0 +1,10 @@
+{
+    "name": "metno/landing_page_creator",
+    "type": "drupal-custom-module",
+    "description": "Create static page for DOI assignment.",
+    "license": "GPL-3.0-or-later",
+    "scripts": {
+        "sniff": "phpcs --colors -n --standard=Drupal --extensions=php,module,yml src",
+        "snifferfix": "phpcbf --colors -n --standard=Drupal --extensions=php,module,yml src"
+    }
+}
