@@ -272,15 +272,10 @@ class LandingPageCreatorRegisterForm extends FormBase {
       }
     }
     else {
-      \Drupal::logger('landing_page_creator')->debug('Module is in debug mode. DOI registration skipped');
-      \Drupal::messenger()->addMessage('Module is in debug mode. DOI registration skipped', 'warning');
+      $this->getLogger('landing_page_creator')->debug('Module is in debug mode. DOI registration skipped');
+      $this->messenger()->addMessage('Module is in debug mode. DOI registration skipped', 'warning');
       $status = 201;
 
-      /**
-       * TODO: Implement draft delete datacite call
-       * # DELETE /doi/10.5438/JQX3-61AT
-       * $ curl -H "Content-Type: application/plain;charset=UTF-8" -X DELETE -i --user username:password  https://mds.test.datacite.org/doi/10.5438/JQX3-61AT
-       */
       $options = [
            'connect_timeout' => 30,
            'debug' => FALSE,
@@ -295,11 +290,7 @@ class LandingPageCreatorRegisterForm extends FormBase {
       $client = new Client();
       $url = 'https://mds.' . $datacite_url . 'datacite.org/doi/' . $doi;
 
-      /**
-       * TODO: Register web call commentet out for now due to testing...Will need to remove
-       * comments and switch $message statement when going in prod
-       */
-      \Drupal::logger('landing_page_creator')->debug('Delete the DataCite draft with DOI: ' . $doi);
+      $this->getLogger('landing_page_creator')->debug('Delete the DataCite draft with DOI: ' . $doi);
       try {
         // $client = \Drupal::httpClient();
         $result_reg = $client->delete($url, $options);
@@ -312,7 +303,7 @@ class LandingPageCreatorRegisterForm extends FormBase {
       // dpm($result_reg);
       $status = $result_reg->getStatusCode();
       if ($status != 200) {
-        \Drupal::messenger()->addMessage('Something went wrong deleting DataCite draft. Please see logs or contact Administrator', 'warning');
+        $this->messenger()->addMessage('Something went wrong deleting DataCite draft. Please see logs or contact Administrator', 'warning');
       }
 
     }
@@ -334,66 +325,19 @@ class LandingPageCreatorRegisterForm extends FormBase {
   }
 
   /**
-   *
+   * Discard and undo the created landingpage and doi.
    */
   public function discardLandingPage(array &$form, FormStateInterface $form_state) {
-    \Drupal::logger('landing_page_creator')->debug('Executing discardLandingPage');
+    $this->getLogger('landing_page_creator')->debug('Executing discardLandingPage');
     // $response = new AjaxResponse();
-    $tempstore = \Drupal::service('tempstore.private')->get('landing_page_creator');
+    $tempstore = $this->tempstore->get('landing_page_creator');
     $tempstore->delete('node');
     $tempstore->delete('datacite_xml');
 
-    $config = \Drupal::config('landing_page_creator.configuration');
-
-    $datacite_user = $config->get('username_datacite');
-    $datacite_pass = $config->get('pass_datacite');
-    $datacite_prefix = $config->get('prefix_datacite');
-    $datacite_url = $config->get('url_datacite');
-
-    // $doi = $form_state->getValue('doi');
-
-    /**
-     * TODO: Implement draft delete datacite call
-     * # DELETE /doi/10.5438/JQX3-61AT
-     * $ curl -H "Content-Type: application/plain;charset=UTF-8" -X DELETE -i --user username:password  https://mds.test.datacite.org/doi/10.5438/JQX3-61AT
-     */
-    /*   $options = [
-    'connect_timeout' => 30,
-    'debug' => false,
-    'auth' => [$datacite_user, $datacite_pass],
-    #'body' => $body_content,
-    'headers' => array(
-    'Content-Type' => 'application/plain;charset=UTF-8',
-    )];
-    //$client = \Drupal::httpClient();
-    $result_reg = NULL;
-    $client = new Client();
-    $url = 'https://mds.'.$datacite_url.'datacite.org/doi/' .$doi;
-     */
-    /**
-     * TODO: Register web call commentet out for now due to testing...Will need to remove
-     * comments and switch $message statement when going in prod
-     */
-    /*  \Drupal::logger('landing_page_creator')->debug('Delete the DataCite draft with DOI: ' . $doi);
-    try {
-    //$client = \Drupal::httpClient();
-    $result_reg = $client->delete($url, $options);
-
-    }
-    catch (RequestException $e){
-    // Log the error.
-    watchdog_exception('landing_page_creator', $e);
-    }
-    //dpm($result_reg);
-    $status = $result_reg->getStatusCode();
-    if($status != 200) {
-    \Drupal::messenger()->addMessage('Something went wrong deleting DataCite draft. Please see logs or contact Administrator', 'warning');
-    }
-     */
     $url = Url::fromRoute('landing_page_creator.landing_page_creator_form');
     // $command = new RedirectCommand($url->toString());
     // $response->addCommand($command);
-    \Drupal::messenger()->addMessage('Landing page discarded. Please upload another dataset', 'warning');
+    $this->messenger()->addMessage('Landing page discarded. Please upload another dataset', 'warning');
     $form_state->setRedirectUrl($url);
     // Return $response;.
   }
