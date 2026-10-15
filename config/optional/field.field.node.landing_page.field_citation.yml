@@ -1,0 +1,20 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_citation
+    - node.type.landing_page
+  module:
+    - text
+id: node.landing_page.field_citation
+field_name: field_citation
+entity_type: node
+bundle: landing_page
+label: Citation
+description: 'Citation of the dataset'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: text_long

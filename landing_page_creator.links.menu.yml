@@ -1,0 +1,28 @@
+#Define menu links here
+landing_page_creator.admin_config_form:
+  title: 'Landing page creator configuration'
+  description: 'Configure Datacite account and other module specific settings'
+  route_name: landing_page_creator.admin_config_form
+  parent: metno.group.admin
+  weight: 99
+
+landing_page_creator.landing_page_creator_form:
+  title: 'Landing Page Creator'
+  description: 'Page to submit DOIs request'
+  route_name: landing_page_creator.landing_page_creator_form
+  parent: landing_page_creator.main
+  menu_name: main
+  weight: 0
+
+landing_page_creator.main:
+  title: 'Landing Page'
+  route_name: landing_page_creator.main
+  description: "Upload MMD and create Landing Page"
+  menu_name: main
+
+metno.group.admin:
+  title: 'METNO'
+  route_name: system.admin_config_metno
+  parent: system.admin_config
+  description: 'METNO Configuration'
+  weight: -999

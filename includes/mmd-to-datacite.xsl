@@ -21,11 +21,16 @@ First attempt for MMD to DataCite conversion...
 		    <xsl:value-of select="substring-before(' ',' ')"/>
 		</xsl:element>
 
-                <xsl:apply-templates select="mmd:metadata_identifier" />
+                <xsl:element name="alternateIdentifiers">
+                   <xsl:apply-templates select="mmd:metadata_identifier" />
+                   <!--xsl:apply-templates select="mmd:alternate_identifier" /-->
+                </xsl:element>
                 <!--xsl:apply-templates select="mmd:personnel[mmd:role='Investigator']" /-->
                 <!-- not implemented yet
 -->
-                        <xsl:apply-templates select="mmd:title" />
+		        <xsl:element name="titles">
+		            <xsl:apply-templates select="mmd:title" />
+		        </xsl:element>
                         <!--xsl:apply-templates select="mmd:data_center" /-->
                         <!-- Should reflect PublicationYear, which is
                              missing now...
@@ -59,12 +64,22 @@ First attempt for MMD to DataCite conversion...
                 </xsl:element>
         </xsl:template>
 
+	<xsl:template match="mmd:alternate_identifier">
+                <xsl:element name="alternateIdentifier">
+                    <xsl:attribute name="alternateIdentifierType">
+			    <xsl:value-of select="@type" />
+		    </xsl:attribute>
+		    <xsl:value-of select="." />
+                </xsl:element>
+        </xsl:template>
+
 	<xsl:template match="mmd:title">
-		<xsl:element name="titles">
-                    <xsl:element name="title">
-			<xsl:value-of select="." />
-                    </xsl:element>
-		</xsl:element>
+		<xsl:element name="title">
+		    <xsl:if test="@xml:lang != 'en'">
+                        <xsl:attribute name="titleType">TranslatedTitle</xsl:attribute>
+		    </xsl:if>
+		    <xsl:value-of select="." />
+                </xsl:element>
 	</xsl:template>
 
 	<xsl:template match="mmd:abstract">
@@ -170,37 +185,11 @@ First attempt for MMD to DataCite conversion...
 	<xsl:template match="mmd:use_constraint">
 		<xsl:element name="rightsList">
                     <xsl:element name="rights">
-                	<xsl:attribute name="rightsURI">
-                                <xsl:if test=". = 'Public Domain'">
-                                   <xsl:text>http://spdx.org/licenses/CC0-1.0</xsl:text>
-                                </xsl:if>
-                                <xsl:if test=".  ='Attribution'">
-                                   <xsl:text>http://spdx.org/licenses/CC-BY-4.0</xsl:text>
-                                </xsl:if>
-                                <xsl:if test=". = 'Share-alike'">
-                                   <xsl:text>http://spdx.org/licenses/CC-BY-SA-4.0</xsl:text>
-                                </xsl:if>
-                                <xsl:if test=".='Noncommercial'">
-					<xsl:text>http://spdx.org/licenses/CC-BY-NC-4.0</xsl:text>
-                                </xsl:if>
-			</xsl:attribute>
-			<xsl:attribute name="rightsIdentifier">
-                                <xsl:if test=". = 'Public Domain'">
-                                   <xsl:text>CC0-1.0</xsl:text>
-                                </xsl:if>
-                                <xsl:if test=".  ='Attribution'">
-                                   <xsl:text>CC-BY-4.0</xsl:text>
-                                </xsl:if>
-                                <xsl:if test=". = 'Share-alike'">
-                                   <xsl:text>CC-BY-SA-4.0</xsl:text>
-                                </xsl:if>
-                                <xsl:if test=".='Noncommercial'">
-                                   <xsl:text>CC-BY-NC-4.0</xsl:text>
-                                </xsl:if>
-			</xsl:attribute>
+                        <xsl:attribute name="rightsURI"><xsl:value-of select="mmd:resource" /></xsl:attribute>
+                        <xsl:attribute name="rightsIdentifier"><xsl:value-of select="mmd:identifier" /></xsl:attribute>
                         <xsl:attribute name="schemeURI">https://spdx.org/licenses/</xsl:attribute>
                         <xsl:attribute name="rightsIdentifierScheme">SPDX</xsl:attribute>
-                        <xsl:value-of select="." />
+			<xsl:value-of select="mmd:identifier" />
                     </xsl:element>
 		</xsl:element>
 	</xsl:template>
@@ -246,6 +235,9 @@ First attempt for MMD to DataCite conversion...
             <xsl:element name="dif:Dataset_Editor">
                 <xsl:value-of select="mmd:dataset_editor" />
             </xsl:element>
+            <xsl:element name="dif:Dataset_Title">
+                <xsl:value-of select="mmd:dataset_title" />
+            </xsl:element>
             <xsl:element name="dif:Dataset_Series_Name">
                 <xsl:value-of select="mmd:dataset_series_name" />
             </xsl:element>
@@ -271,19 +263,19 @@ First attempt for MMD to DataCite conversion...
         <xsl:when test="contains($author, ',')">
         <xsl:element name="creator">
         <xsl:element name="creatorName">
-        <xsl:attribute name="nameType">Personal</xsl:attribute>
-            <xsl:value-of select="substring-before($author, ',')"/>
+        <!--xsl:attribute name="nameType">Personal</xsl:attribute-->
+            <xsl:value-of select="normalize-space(substring-before($author, ','))"/>
         </xsl:element>
         </xsl:element>
         <xsl:call-template name="tokenize">
-            <xsl:with-param name="author" select="substring-after($author, ',')"/>
+            <xsl:with-param name="author" select="normalize-space(substring-after($author, ','))"/>
         </xsl:call-template>
         </xsl:when>
         <xsl:otherwise>
         <xsl:element name="creator">
         <xsl:element name="creatorName">
-        <xsl:attribute name="nameType">Personal</xsl:attribute>
-            <xsl:value-of select="$author"/>
+        <!--xsl:attribute name="nameType">Personal</xsl:attribute-->
+            <xsl:value-of select="normalize-space($author)"/>
         </xsl:element>
         </xsl:element>
         </xsl:otherwise>

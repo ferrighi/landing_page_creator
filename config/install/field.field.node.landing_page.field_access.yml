@@ -1,0 +1,20 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_access
+    - node.type.landing_page
+  module:
+    - text
+id: node.landing_page.field_access
+field_name: field_access
+entity_type: node
+bundle: landing_page
+label: Access
+description: 'Dataset access'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: text_long

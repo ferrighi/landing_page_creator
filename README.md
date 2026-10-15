@@ -1,8 +1,13 @@
 ## Module: Landing Page Creator (landing_page_creator)
 
-### Description: 
-A Drupal module to create landing pages associated with DOIs requests. 
-The workflow is the following: 
+Authors: Lara Ferrighi, laraf@met.no
+         Magnar Eivind Martinsen, magnarem@met.no
+
+
+
+### Description:
+A Drupal module to create landing pages associated with DOIs requests.
+The workflow is the following:
 - the form page is available at "yoursite/landing-page-creator/form"
 - upload an xml file with mmd specifications
 - the mmd fields are translated into Datacite metadata format using https://github.com/steingod/mmd/blob/master/xslt/mmd-to-datacite.xsl which is included in the module under the includes directory
@@ -12,7 +17,13 @@ The workflow is the following:
 - URL of the landing page is registered to Datacite using drupal_http_request
 
 ### Permission:
-To configure the permissions for this module, i.e. who can access the "landing-page-creator/form" page go to: "People->Permissions" and activate the "Access content for the Landing Page module" for the role of interest.
+To configure the permissions for this module, i.e. who can access the "landing-page-creator/form" page go to: "People->Permissions" and activate the "create landing page" permission for the Landing Page module, for the role of interest.
+
+### Drupal 8 specific information:
+- The module should be placed in **<web_root>/modules/metno** for it to work properly
+- The module will create the required content type and other required entities on install, no manual creation should be needed.
+- To disable DOI registration, please check the debug option in the configuration page of the module.
+- Some default messages to the user can be configured in the configuration page of the module.
 
 ### Requirements
 
@@ -26,10 +37,10 @@ depending on the evironment selected (test in the first case, operational in the
 * A Landing Page content type must be set up in the portal that is using this module. See below for the configuration of this content type.
 
 ### Configuration of the Landing Page content type
-
+**Note:** *This is not required for the Drupal 8 version of the module*
 #### Content type
 
-A content type (CT) must be set up in the Drupal site. 
+A content type (CT) must be set up in the Drupal site.
 - the manchine name of the CT: landing_page
 
 - the fields of the content type must be as follow:
@@ -60,8 +71,8 @@ A content type (CT) must be set up in the Drupal site.
 - machine name: field_iso_topic_category
 - number of values: unlimited
 
-| key | values 
-| --- | --- 
+| key | values
+| --- | ---
 |farming| farming
 |biota|biota
 |boundaries|boundaries
@@ -80,17 +91,19 @@ A content type (CT) must be set up in the Drupal site.
 |society|society
 |structure|structure
 |transportation|transportation
-|utilitiesCommunication|utilitiesCommunication 
+|utilitiesCommunication|utilitiesCommunication
 
-##### License 
+##### License
 
 - machine name: field_license
 - number of values: 1
 
-| key | values 
-| --- | --- 
-|C0|<span class="license-name">CC0</span><a href="https://creativecommons.org/share-your-work/public-domain/cc0/"><img src="icons/CC0.png" ></a>
-|CCBY|<span class="license-name">CC-BY</span><a href="https://creativecommons.org/licenses/by/4.0/"><img src="icons/CC0.png" ></a>
-|CCBYSA|<span id="license-name">CC BY-SA</span><a href="https://creativecommons.org/licenses/by-sa/3.0/"><img src="icons/CCBYSA.png" ></a>
-|CCBYNC|<span id="license-name">CC BY-NC</span><a href="https://creativecommons.org/licenses/by-nc/4.0/"><img src="icons/CCBYNC.png" ></a>
-
+| key | values
+| --- | ---
+|CC0-1.0|<span class="license-name">CC0-1.0</span><a href="http://spdx.org/licenses/CC0-1.0 "><img src="icons/CC0.png" ></a>
+|CC-BY-4.0|<span class="license-name">CC-BY-4.0</span><a href="http://spdx.org/licenses/CC-BY-4.0"><img src="icons/CCBY.png" ></a>
+|CC-BY-SA-4.0|<span class="license-name">CC-BY-SA-4.0</span><a href="http://spdx.org/licenses/CC-BY-SA-4.0"><img src="icons/CCBYSA.png" ></a>
+|CC-BY-NC-4.0|<span class="license-name">CC-BY-NC-4.0</span><a href="http://spdx.org/licenses/CC-BY-NC-4.0"><img src="icons/CCBYNC.png" ></a>
+|CC-BY-NC-SA-4.0| <span class="license-name">CC-BY-NC-SA-4.0</span><a href="http://spdx.org/licenses/CC-BY-NC-SA-4.0"><img src="icons/CCBYNCSA.png" ></a>
+|CC-BY-ND-4.0|<span class="license-name">CC-BY-ND-4.0</span><a href="http://spdx.org/licenses/CC-BY-ND-4.0"><img src="icons/CCBYND.png" ></a>
+|CC-BY-NC-ND-4.0| <span class="license-name">CC-BY-NC-ND-4.0</span><a href="http://spdx.org/licenses/CC-BY-NC-ND-4.0"><img src="icons/CCBYNCND.png" ></a>
