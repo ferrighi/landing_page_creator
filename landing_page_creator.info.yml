@@ -1,8 +1,8 @@
 name: 'Landing Page Creator'
 description: 'Create static page for DOI assignment'
 type: module
-core_version_requirement: ^8.8 || ^9 || ^10
-version: 2.2.0
+core_version_requirement:  ^10 || ^11
+version: 2.3.0
 package: METNO
 configure: landing_page_creator.admin_config_form
 dependencies:
@@ -10,9 +10,10 @@ dependencies:
   - field_group:field_group
   - metatag:metatag
   - leaflet:leaflet
+  - leaflet:leaflet_views
   - pathauto:pathauto
+  - views_autocomplete_filters:views_autocomplete_filters
   - token:token
-  - ctools:ctools
   - drupal:menu_ui
   - drupal:node
   - drupal:user

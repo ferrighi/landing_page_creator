@@ -13,6 +13,8 @@ use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\RequestException;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drupal\Core\Utility\Error;
 
 /**
  * This form create landingpage CT  with a registered DOI.
@@ -56,6 +58,14 @@ class LandingPageCreatorRegisterForm extends FormBase {
    */
   protected $pathAliasManager;
 
+
+  /**
+   * The rendder service.
+   *
+   * @var \Drupal\Core\Render\Renderer
+   */
+  protected $renderer;
+
   /**
    * {@inheritdoc}
    */
@@ -66,6 +76,7 @@ class LandingPageCreatorRegisterForm extends FormBase {
     $instance->entityTypeManager = $container->get('entity_type.manager');
     $instance->streamWrapper = $container->get('stream_wrapper_manager');
     $instance->pathaliasManager = $container->get('path_alias.manager');
+    $instance->renderer = $container->get("renderer");
 
     return $instance;
   }
@@ -89,7 +100,7 @@ class LandingPageCreatorRegisterForm extends FormBase {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, FormStateInterface $form_state, Request $request = NULL) {
+  public function buildForm(array $form, FormStateInterface $form_state, ?Request $request = NULL) {
     $config = $this->config('landing_page_creator.configuration');
     $register_message = $config->get('message_register');
     $debug_message = $config->get('message_debug');
@@ -103,11 +114,8 @@ class LandingPageCreatorRegisterForm extends FormBase {
     $view_mode = $view_mode_config;
 
     $view_builder = $this->entityTypeManager->getViewBuilder($entity_type);
-    // $storage = \Drupal::entityTypeManager()->getStorage($entity_type);
-    // $node = $storage->load($nid);
-    // $node = \Drupal\node\Entity\Node::load($nodeid);
     $build = $view_builder->view($node, $view_mode);
-    $output = render($build);
+    $output = $this->renderer->render($build);
     // Dispaly debug warning.
     if ($config->get('debug')) {
 
@@ -190,7 +198,7 @@ class LandingPageCreatorRegisterForm extends FormBase {
     }
     catch (RequestException $e) {
       // Log the error.
-      watchdog_exception('landing_page_creator', $e);
+      Error::logException('landing_page_creator', $e);
       $this->messenger()->addError($this->t('Datacite request has failed. Please check log messages and/or contact administrator'));
       $url = Url::fromRoute('landing_page_creator.landing_page_creator_form');
       // $form_state->setRedirectUrl($url);
@@ -198,7 +206,7 @@ class LandingPageCreatorRegisterForm extends FormBase {
     }
     catch (ClientException $e) {
       // Log the error.
-      watchdog_exception('landing_page_creator', $e);
+      Error::logException('landing_page_creator', $e);
       $this->messenger()->addError($this->t('Datacite request has failed. Please check log messages and/or contact administrator'));
       $url = Url::fromRoute('landing_page_creator.landing_page_creator_form');
       // $form_state->setRedirectUrl($url);
@@ -230,9 +238,10 @@ class LandingPageCreatorRegisterForm extends FormBase {
     $node->setPublished(TRUE);
     $node->set('path', ['alias' => '/datasets/' . $doi, 'pathauto' => PathautoState::SKIP]);
     $node->set('field_doi', $doi_uri);
-
+    $base_url = $this->requestStack->getCurrentRequest()->getSchemeAndHttpHost();
     // $doi = $form_state->getValue('doi');
-    $body_content = 'doi=' . $doi . "\nurl=" . $base_url . $this->pathAliasManager->getAliasByPath('/datasets/' . $doi);
+    $body_content = 'doi=' . $doi . "\nurl=" . $base_url
+    . $this->pathAliasManager->getAliasByPath('/datasets/' . $doi);
     // dpm($body_content);
     $options = [
        'connect_timeout' => 30,
@@ -257,13 +266,13 @@ class LandingPageCreatorRegisterForm extends FormBase {
       }
       catch (RequestException $e) {
         // Log the error.
-        watchdog_exception('landing_page_creator', $e);
+        Error::logException('landing_page_creator', $e);
       }
       // dpm($result_reg);
       $status = $result_reg->getStatusCode();
       $this->getLogger('landing_page_creator')->debug('DataCite DOI registration with status code: ' . $status);
       if ($status != 201) {
-        \Drupal::messenger()->addError('Something went wrong during DOI registration. Landing page not created! Please contact administrator');
+        $this->messenger()->addError('Something went wrong during DOI registration. Landing page not created! Please contact administrator');
         $url = Url::fromRoute('landing_page_creator.landing_page_creator_form');
         // $node->delete();
         $tempstore->delete('node');
@@ -298,7 +307,7 @@ class LandingPageCreatorRegisterForm extends FormBase {
       }
       catch (RequestException $e) {
         // Log the error.
-        watchdog_exception('landing_page_creator', $e);
+        Error::logException('landing_page_creator', $e);
       }
       // dpm($result_reg);
       $status = $result_reg->getStatusCode();
