@@ -3,8 +3,34 @@
     "type": "drupal-custom-module",
     "description": "Create static page for DOI assignment.",
     "license": "GPL-3.0-or-later",
-    "scripts": {
-        "sniff": "phpcs --colors -n --standard=Drupal --extensions=php,module,yml src",
-        "snifferfix": "phpcbf --colors -n --standard=Drupal --extensions=php,module,yml src"
+    "require": {
+      "drupal/geofield": "^10",
+      "drupal/metatag": "^2.2",
+      "drupal/leaflet": "^10.4",
+      "drupal/views_autocomplete_filters":"^2.0",
+      "drupal/pathauto": "^1.15",
+      "drupal/field_group": "^4"
+    },
+    "require-dev": {
+       "drupal/upgrade_status": "^4.3",
+       "drush/drush": "^13",
+       "drupal/core-dev": "^10 || ^11"
+    },
+    "prefer-stable": true,
+     "config": {
+        "allow-plugins": {
+            "composer/installers": true,
+            "dealerdirect/phpcodesniffer-composer-installer": true,
+            "cweagans/composer-patches": true,
+            "drupal/core-composer-scaffold": true,
+            "drupalspoons/composer-plugin": true,
+            "phpstan/extension-installer": true,
+            "php-http/discovery": true,
+            "tbachert/spi": true,
+            "wikimedia/composer-merge-plugin": true,
+            "phpdocumentor/shim": true,
+            "symfony/runtime": true
+        }
+
     }
 }

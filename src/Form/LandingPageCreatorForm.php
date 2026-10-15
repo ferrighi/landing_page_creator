@@ -6,6 +6,7 @@ use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
 use Drupal\node\Entity\Node;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Form for uploading mmd and convert to datacite.
@@ -46,6 +47,13 @@ class LandingPageCreatorForm extends FormBase {
   protected $streamWrapper;
 
   /**
+   * The extension resolver.
+   *
+   * @var \Drupal\Core\Extension\ExtensionPathResolver
+   */
+  protected $extensionResolver;
+
+  /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
@@ -54,6 +62,7 @@ class LandingPageCreatorForm extends FormBase {
     $instance->tempstore = $container->get('tempstore.private');
     $instance->entityTypeManager = $container->get('entity_type.manager');
     $instance->streamWrapper = $container->get('stream_wrapper_manager');
+    $instance->extensionResolver = $container->get('extension.path.resolver');
     return $instance;
   }
 
@@ -173,7 +182,7 @@ class LandingPageCreatorForm extends FormBase {
     // should the repository included in this module?
     $furi_rp = $this->filesystem->realpath($furi);
     // Requires xsl file from repo.
-    exec('xsltproc ' . drupal_get_path('module', 'landing_page_creator') . '/includes/mmd-to-datacite.xsl ' . $furi_rp . ' 2>&1', $datacite_metadata, $status);
+    exec('xsltproc ' . $this->extensionResolver->getPath('module', 'landing_page_creator') . '/includes/mmd-to-datacite.xsl ' . $furi_rp . ' 2>&1', $datacite_metadata, $status);
     /* Temporary save the transformed datacite xml. */
     $xml = implode(" ", $datacite_metadata);
     $tempstore->set('datacite_xml', $xml);
@@ -207,7 +216,7 @@ class LandingPageCreatorForm extends FormBase {
       $xml_wns = $xml->children();
     }
 
-    $metadata_arr = $this->depth_mmd("", $xml_wns);
+    $metadata_arr = $this->depthMmd("", $xml_wns);
     $form_state->setValue('metadata', $metadata_arr);
     // dpm($metadata_arr);
     // personnel
